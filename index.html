@@ -21,6 +21,10 @@
     <ul id="stories-list">
         <!-- Истории будут подставляться скриптом -->
     </ul>
+    <div style="text-align:center;margin:24px 0 0 0;">
+        <button id="share-btn" style="padding:10px 24px;border-radius:8px;border:none;background:#232323;color:#fff;cursor:pointer;font-size:1.1rem;box-shadow:0 2px 8px #0003;transition:background 0.2s;">Поделиться</button>
+        <span id="share-status" style="display:none;margin-left:12px;color:#4caf50;font-size:0.98rem;">Ссылка скопирована!</span>
+    </div>
     <button id="audio-toggle" style="position:fixed;top:24px;right:24px;z-index:1000;background:#181818cc;color:#e0e0e0;border:none;border-radius:50%;width:48px;height:48px;box-shadow:0 2px 8px #000a;cursor:pointer;font-size:1.5rem;transition:background 0.2s;">🔊</button>
     <button id="theme-toggle" style="position:fixed;top:24px;left:24px;z-index:1000;background:#181818cc;color:#e0e0e0;border:none;border-radius:50%;width:48px;height:48px;box-shadow:0 2px 8px #000a;cursor:pointer;font-size:1.5rem;transition:background 0.2s;">🌙</button>
     <audio id="bg-music" src="background.mp3" loop preload="auto"></audio>
@@ -120,6 +124,29 @@
         renderStories();
       });
       renderStories();
+      // --- Кнопка Поделиться ---
+      const shareBtn = document.getElementById('share-btn');
+      const shareStatus = document.getElementById('share-status');
+      shareBtn.addEventListener('click', async () => {
+        const shareData = {
+          title: document.title,
+          text: 'Смотри страшные истории!',
+          url: window.location.href
+        };
+        if (navigator.share) {
+          try {
+            await navigator.share(shareData);
+          } catch (e) {}
+        } else {
+          try {
+            await navigator.clipboard.writeText(window.location.href);
+            shareStatus.style.display = 'inline';
+            setTimeout(() => shareStatus.style.display = 'none', 2000);
+          } catch (e) {
+            alert('Скопируйте ссылку вручную: ' + window.location.href);
+          }
+        }
+      });
     </script>
     <footer style="margin-top:auto;padding:32px 0 16px 0;text-align:center;color:#666;font-size:0.95rem;">
         © 2025 Страшные истории. Все права защищены.
