@@ -7,17 +7,124 @@
     <meta name="keywords" content="страшные истории, страшилки, ужасы, мистические рассказы, хоррор, пугающие истории, легенды, интернет истории">
     <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="stylesheet" href="style.css">
+    <style>
+      .fixed-header {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 2000;
+        background: #181818ee;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        height: 60px;
+        box-shadow: 0 2px 12px #000a;
+      }
+      .fixed-header .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .fixed-header .nav-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 8px #000a;
+      }
+      .fixed-header a, .fixed-header select, .fixed-header button {
+        color: #fff;
+        background: none;
+        border: none;
+        font-size: 1rem;
+        text-decoration: none;
+        margin: 0;
+        cursor: pointer;
+        border-radius: 6px;
+        padding: 5px 10px;
+        transition: background 0.2s;
+        box-sizing: border-box;
+        vertical-align: middle;
+        line-height: 1.2;
+      }
+      .fixed-header a:hover, .fixed-header select:hover, .fixed-header button:hover {
+        background: #232323;
+      }
+      .fixed-header select {
+        color: #232323;
+        background: #fff;
+        min-width: 120px;
+        margin-right: 0;
+        margin-left: 0;
+        padding: 5px 10px;
+        height: 32px;
+      }
+      .fixed-header .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .fixed-header button {
+        background: #232323;
+        color: #fff;
+        border: none;
+        padding: 5px 12px;
+        margin: 0;
+        min-width: 0;
+        height: 32px;
+        font-size: 1rem;
+      }
+      .fixed-header button:hover {
+        background: #333;
+      }
+      @media (max-width: 900px) {
+        .fixed-header {
+          flex-direction: column;
+          height: auto;
+          padding: 8px 4vw;
+        }
+        .fixed-header .nav-left, .fixed-header .nav-right {
+          flex-direction: column;
+          gap: 6px;
+          align-items: flex-start;
+          width: 100%;
+        }
+        .fixed-header .nav-right {
+          align-items: flex-start;
+          width: 100%;
+        }
+        .fixed-header .nav-title { font-size: 1rem; }
+        .fixed-header a, .fixed-header select, .fixed-header button {
+          width: 100%;
+          margin: 0 0 4px 0;
+          min-width: 0;
+        }
+        .fixed-header select, .fixed-header button {
+          height: 36px;
+        }
+        body { padding-top: 110px; }
+      }
+      body { padding-top: 70px; }
+    </style>
 </head>
 <body>
-    <h1>Страшные истории</h1>
-    <p>Собрание самых жутких рассказов с просторов интернета</p>
-    <div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-bottom:24px;">
-        <select id="category-select" style="padding:6px 12px;font-size:1rem;border-radius:6px;">
-            <option value="all">Все категории</option>
+    <div class="fixed-header">
+      <div class="nav-left">
+        <span class="nav-title">Страшные истории</span>
+        <a href="about.html">О проекте</a>
+      </div>
+      <div class="nav-right">
+        <select id="category-select" style="min-width:120px;">
+          <option value="all">Все категории</option>
         </select>
-        <button id="sort-alpha" style="padding:6px 14px;border-radius:6px;border:none;background:#232323;color:#e0e0e0;cursor:pointer;">Сортировать по алфавиту</button>
-        <button id="sort-default" style="padding:6px 14px;border-radius:6px;border:none;background:#232323;color:#e0e0e0;cursor:pointer;">Сбросить сортировку</button>
+        <button id="sort-alpha">Сортировать по алфавиту</button>
+        <button id="sort-date">По дате</button>
+        <button id="sort-popular">По популярности</button>
+        <button id="sort-default">Сбросить</button>
+      </div>
     </div>
+    <h1 style="margin-top:24px;">Страшные истории</h1>
+    <p>Собрание самых жутких рассказов с просторов интернета</p>
     <ul id="stories-list">
         <!-- Истории будут подставляться скриптом -->
     </ul>
@@ -71,6 +178,8 @@
       const categorySelect = document.getElementById('category-select');
       const storiesList = document.getElementById('stories-list');
       const sortAlphaBtn = document.getElementById('sort-alpha');
+      const sortDateBtn = document.getElementById('sort-date');
+      const sortPopularBtn = document.getElementById('sort-popular');
       const sortDefaultBtn = document.getElementById('sort-default');
       // Собираем категории
       const allStories = Object.values(stories);
@@ -92,6 +201,10 @@
         }
         if (currentSort === 'alpha') {
           filtered = filtered.slice().sort((a, b) => a.title.localeCompare(b.title, 'ru'));
+        } else if (currentSort === 'date') {
+          filtered = filtered.slice().sort((a, b) => (b.date || 0) - (a.date || 0));
+        } else if (currentSort === 'popular') {
+          filtered = filtered.slice().sort((a, b) => (b.views || 0) - (a.views || 0));
         } else {
           filtered = filtered.slice().sort((a, b) => defaultOrder.indexOf(a.id) - defaultOrder.indexOf(b.id));
         }
@@ -102,6 +215,14 @@
           a.href = `story.html?id=${story.id}`;
           a.textContent = story.title;
           li.appendChild(a);
+          if (story.description) {
+            const desc = document.createElement('div');
+            desc.textContent = story.description;
+            desc.style.fontSize = '0.97rem';
+            desc.style.color = '#888';
+            desc.style.marginTop = '2px';
+            li.appendChild(desc);
+          }
           storiesList.appendChild(li);
         });
         // Звук при наведении
@@ -120,6 +241,14 @@
       });
       sortAlphaBtn.addEventListener('click', () => {
         currentSort = 'alpha';
+        renderStories();
+      });
+      sortDateBtn.addEventListener('click', () => {
+        currentSort = 'date';
+        renderStories();
+      });
+      sortPopularBtn.addEventListener('click', () => {
+        currentSort = 'popular';
         renderStories();
       });
       sortDefaultBtn.addEventListener('click', () => {

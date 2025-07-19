@@ -7,8 +7,82 @@
     <meta name="description" content="Страшные истории — читайте короткие страшилки и мистические рассказы онлайн. Пугающие истории для любителей хоррора.">
     <meta name="keywords" content="страшные истории, страшилки, ужасы, мистические рассказы, хоррор, пугающие истории, легенды, интернет истории">
     <link rel="icon" type="image/png" href="favicon.png" />
+    <style>
+      .fixed-header {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 2000;
+        background: #181818ee;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        height: 60px;
+        box-shadow: 0 2px 12px #000a;
+      }
+      .fixed-header .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .fixed-header .nav-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 8px #000a;
+      }
+      .fixed-header a, .fixed-header select {
+        color: #fff;
+        background: none;
+        border: none;
+        font-size: 1rem;
+        text-decoration: none;
+        margin: 0 6px;
+        cursor: pointer;
+        border-radius: 6px;
+        padding: 6px 12px;
+        transition: background 0.2s;
+      }
+      .fixed-header a:hover, .fixed-header select:hover {
+        background: #232323;
+      }
+      .fixed-header select {
+        color: #232323;
+        background: #fff;
+      }
+      .fixed-header .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      body { padding-top: 70px; }
+      @media (max-width: 600px) {
+        .fixed-header { flex-direction: column; height: auto; padding: 8px 4vw; }
+        .fixed-header .nav-left, .fixed-header .nav-right { flex-direction: column; gap: 6px; }
+        .fixed-header .nav-title { font-size: 1rem; }
+        body { padding-top: 90px; }
+      }
+    </style>
 </head>
 <body>
+    <div class="fixed-header">
+      <div class="nav-left">
+        <a href="index.html">&larr; Назад к списку</a>
+        <span class="nav-title">Страшные истории</span>
+        <a href="about.html">О проекте</a>
+        <a href="#facts">Факты и детали</a>
+      </div>
+      <div class="nav-right">
+        <select id="category-nav" onchange="if(this.value)window.location.href='index.html?category='+this.value;" style="min-width:120px;">
+          <option value="">Категории</option>
+          <option value="Паранормальное">Паранормальное</option>
+          <option value="Убийцы / маньяки">Убийцы / маньяки</option>
+          <option value="Проклятия">Проклятия</option>
+          <option value="Технохоррор">Технохоррор</option>
+        </select>
+      </div>
+    </div>
     <div id="story-container">
         <!-- История будет подставляться сюда -->
     </div>
@@ -16,7 +90,6 @@
     <button id="theme-toggle" style="position:fixed;top:24px;left:24px;z-index:1000;background:#181818cc;color:#e0e0e0;border:none;border-radius:50%;width:48px;height:48px;box-shadow:0 2px 8px #000a;cursor:pointer;font-size:1.5rem;transition:background 0.2s;">🌙</button>
     <audio id="bg-music" src="background.mp3" loop preload="auto"></audio>
     <audio id="hover-sfx" src="sfx-hover.mp3" preload="auto"></audio>
-    <a href="index.html" style="display:inline-block;margin:32px auto 0 auto;color:#b0b0b0;text-decoration:none;font-size:1.1rem;display:block;text-align:center;max-width:200px;">&larr; Назад к списку</a>
     <script src="stories.js"></script>
     <script>
       const audioToggle = document.getElementById('audio-toggle');
