@@ -1,288 +1,278 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Страшные истории</title>
     <meta name="description" content="Страшные истории — собрание самых жутких рассказов с просторов интернета. Короткие страшилки, мистические истории, пугающие легенды.">
     <meta name="keywords" content="страшные истории, страшилки, ужасы, мистические рассказы, хоррор, пугающие истории, легенды, интернет истории">
     <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="stylesheet" href="style.css">
-    <style>
-      .fixed-header {
-        position: fixed;
-        top: 0; left: 0; right: 0;
-        z-index: 2000;
-        background: #181818ee;
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 24px;
-        height: 60px;
-        box-shadow: 0 2px 12px #000a;
-      }
-      .fixed-header .nav-left {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-      }
-      .fixed-header .nav-title {
-        font-size: 1.25rem;
-        font-weight: bold;
-        letter-spacing: 1px;
-        text-shadow: 0 2px 8px #000a;
-      }
-      .fixed-header a, .fixed-header select, .fixed-header button {
-        color: #fff;
-        background: none;
-        border: none;
-        font-size: 1rem;
-        text-decoration: none;
-        margin: 0;
-        cursor: pointer;
-        border-radius: 6px;
-        padding: 5px 10px;
-        transition: background 0.2s;
-        box-sizing: border-box;
-        vertical-align: middle;
-        line-height: 1.2;
-      }
-      .fixed-header a:hover, .fixed-header select:hover, .fixed-header button:hover {
-        background: #232323;
-      }
-      .fixed-header select {
-        color: #232323;
-        background: #fff;
-        min-width: 120px;
-        margin-right: 0;
-        margin-left: 0;
-        padding: 5px 10px;
-        height: 32px;
-      }
-      .fixed-header .nav-right {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      .fixed-header button {
-        background: #232323;
-        color: #fff;
-        border: none;
-        padding: 5px 12px;
-        margin: 0;
-        min-width: 0;
-        height: 32px;
-        font-size: 1rem;
-      }
-      .fixed-header button:hover {
-        background: #333;
-      }
-      @media (max-width: 900px) {
-        .fixed-header {
-          flex-direction: column;
-          height: auto;
-          padding: 8px 4vw;
-        }
-        .fixed-header .nav-left, .fixed-header .nav-right {
-          flex-direction: column;
-          gap: 6px;
-          align-items: flex-start;
-          width: 100%;
-        }
-        .fixed-header .nav-right {
-          align-items: flex-start;
-          width: 100%;
-        }
-        .fixed-header .nav-title { font-size: 1rem; }
-        .fixed-header a, .fixed-header select, .fixed-header button {
-          width: 100%;
-          margin: 0 0 4px 0;
-          min-width: 0;
-        }
-        .fixed-header select, .fixed-header button {
-          height: 36px;
-        }
-        body { padding-top: 110px; }
-      }
-      body { padding-top: 70px; }
-    </style>
 </head>
 <body>
-    <div class="fixed-header">
-      <div class="nav-left">
-        <span class="nav-title">Страшные истории</span>
-        <a href="about.html">О проекте</a>
-      </div>
-      <div class="nav-right">
-        <select id="category-select" style="min-width:120px;">
-          <option value="all">Все категории</option>
-        </select>
-        <button id="sort-alpha">Сортировать по алфавиту</button>
-        <button id="sort-date">По дате</button>
-        <button id="sort-popular">По популярности</button>
-        <button id="sort-default">Сбросить</button>
-      </div>
-    </div>
-    <h1 style="margin-top:24px;">Страшные истории</h1>
-    <p>Собрание самых жутких рассказов с просторов интернета</p>
-    <ul id="stories-list">
-        <!-- Истории будут подставляться скриптом -->
-    </ul>
-    <div style="text-align:center;margin:24px 0 0 0;">
-        <button id="share-btn" style="padding:10px 24px;border-radius:8px;border:none;background:#232323;color:#fff;cursor:pointer;font-size:1.1rem;box-shadow:0 2px 8px #0003;transition:background 0.2s;">Поделиться</button>
-        <span id="share-status" style="display:none;margin-left:12px;color:#4caf50;font-size:0.98rem;">Ссылка скопирована!</span>
-    </div>
-    <button id="audio-toggle" style="position:fixed;top:24px;right:24px;z-index:1000;background:#181818cc;color:#e0e0e0;border:none;border-radius:50%;width:48px;height:48px;box-shadow:0 2px 8px #000a;cursor:pointer;font-size:1.5rem;transition:background 0.2s;">🔊</button>
-    <div style="position:fixed;top:24px;left:24px;z-index:1001;display:flex;align-items:center;gap:10px;">
-        <a href="about.html" style="display:inline-block;padding:8px 18px;border-radius:8px;border:none;background:#232323;color:#fff;cursor:pointer;font-size:1.05rem;box-shadow:0 2px 8px #0003;text-decoration:none;transition:background 0.2s;">О проекте</a>
-        <button id="theme-toggle" style="background:#181818cc;color:#e0e0e0;border:none;border-radius:50%;width:48px;height:48px;box-shadow:0 2px 8px #000a;cursor:pointer;font-size:1.5rem;transition:background 0.2s;">🌙</button>
-    </div>
+    <!-- Фиксированная навигация -->
+    <header class="fixed-header">
+        <div class="nav-left">
+            <span class="nav-title">👻 Страшные истории</span>
+            <a href="about.html">О проекте</a>
+        </div>
+        <div class="nav-right">
+            <select id="category-select">
+                <option value="all">Все категории</option>
+            </select>
+            <button id="sort-alpha" class="sort-btn">А-Я</button>
+            <button id="sort-date" class="sort-btn">По дате</button>
+            <button id="sort-popular" class="sort-btn">Популярные</button>
+            <button id="sort-default" class="sort-btn active">По умолчанию</button>
+        </div>
+    </header>
+
+    <!-- Основное содержимое -->
+    <main>
+        <h1>Страшные истории</h1>
+        <p class="subtitle">Собрание самых жутких рассказов с просторов интернета</p>
+        
+        <div class="stories-container">
+            <ul id="stories-list">
+                <!-- Истории будут добавлены через JavaScript -->
+            </ul>
+        </div>
+
+        <div class="share-section">
+            <button id="share-btn" class="share-button">
+                <span>📤</span> Поделиться
+            </button>
+            <span id="share-status" class="share-status">Ссылка скопирована!</span>
+        </div>
+    </main>
+
+    <!-- Управляющие кнопки -->
+    <button id="audio-toggle" class="control-btn audio-btn" title="Включить/выключить музыку">🔊</button>
+    <button id="theme-toggle" class="control-btn theme-btn" title="Сменить тему">🌙</button>
+
+    <!-- Аудио элементы -->
     <audio id="bg-music" src="background.mp3" loop preload="auto"></audio>
     <audio id="hover-sfx" src="sfx-hover.mp3" preload="auto"></audio>
+
+    <footer>
+        © 2025 Страшные истории. Все права защищены.<br>
+        <a href="about.html">О проекте</a>
+    </footer>
+
     <script src="stories.js"></script>
     <script>
-      // --- Тема ---
-      const themeToggle = document.getElementById('theme-toggle');
-      function setTheme(mode) {
-        if (mode === 'light') {
-          document.body.classList.add('light-mode');
-          themeToggle.textContent = '☀️';
-        } else {
-          document.body.classList.remove('light-mode');
-          themeToggle.textContent = '🌙';
-        }
-      }
-      let theme = localStorage.getItem('theme') || 'dark';
-      setTheme(theme);
-      themeToggle.addEventListener('click', () => {
-        theme = (theme === 'dark') ? 'light' : 'dark';
-        localStorage.setItem('theme', theme);
-        setTheme(theme);
-      });
-      // --- Аудио ---
-      const audioToggle = document.getElementById('audio-toggle');
-      const bgMusic = document.getElementById('bg-music');
-      let musicPlaying = false;
-      audioToggle.addEventListener('click', () => {
-        if (musicPlaying) {
-          bgMusic.pause();
-          audioToggle.textContent = '🔊';
-        } else {
-          bgMusic.volume = 0.5;
-          bgMusic.play();
-          audioToggle.textContent = '🔈';
-        }
-        musicPlaying = !musicPlaying;
-      });
-      // --- Категории ---
-      const categorySelect = document.getElementById('category-select');
-      const storiesList = document.getElementById('stories-list');
-      const sortAlphaBtn = document.getElementById('sort-alpha');
-      const sortDateBtn = document.getElementById('sort-date');
-      const sortPopularBtn = document.getElementById('sort-popular');
-      const sortDefaultBtn = document.getElementById('sort-default');
-      // Собираем категории
-      const allStories = Object.values(stories);
-      const categories = Array.from(new Set(allStories.map(s => s.category)));
-      categories.forEach(cat => {
-        const opt = document.createElement('option');
-        opt.value = cat;
-        opt.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
-        categorySelect.appendChild(opt);
-      });
-      // Сортировка и фильтрация
-      let currentSort = 'default';
-      let currentCategory = 'all';
-      let defaultOrder = allStories.map(s => s.id);
-      function renderStories() {
-        let filtered = allStories;
-        if (currentCategory !== 'all') {
-          filtered = filtered.filter(s => s.category === currentCategory);
-        }
-        if (currentSort === 'alpha') {
-          filtered = filtered.slice().sort((a, b) => a.title.localeCompare(b.title, 'ru'));
-        } else if (currentSort === 'date') {
-          filtered = filtered.slice().sort((a, b) => (b.date || 0) - (a.date || 0));
-        } else if (currentSort === 'popular') {
-          filtered = filtered.slice().sort((a, b) => (b.views || 0) - (a.views || 0));
-        } else {
-          filtered = filtered.slice().sort((a, b) => defaultOrder.indexOf(a.id) - defaultOrder.indexOf(b.id));
-        }
-        storiesList.innerHTML = '';
-        filtered.forEach(story => {
-          const li = document.createElement('li');
-          const a = document.createElement('a');
-          a.href = `story.html?id=${story.id}`;
-          a.textContent = story.title;
-          li.appendChild(a);
-          if (story.description) {
-            const desc = document.createElement('div');
-            desc.textContent = story.description;
-            desc.style.fontSize = '0.97rem';
-            desc.style.color = '#888';
-            desc.style.marginTop = '2px';
-            li.appendChild(desc);
-          }
-          storiesList.appendChild(li);
+        // Инициализация приложения
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
         });
-        // Звук при наведении
-        document.querySelectorAll('li a').forEach(link => {
-          link.addEventListener('mouseenter', () => {
-            const sfx = document.getElementById('hover-sfx');
-            sfx.currentTime = 0;
-            sfx.volume = 0.4;
-            sfx.play();
-          });
-        });
-      }
-      categorySelect.addEventListener('change', e => {
-        currentCategory = e.target.value;
-        renderStories();
-      });
-      sortAlphaBtn.addEventListener('click', () => {
-        currentSort = 'alpha';
-        renderStories();
-      });
-      sortDateBtn.addEventListener('click', () => {
-        currentSort = 'date';
-        renderStories();
-      });
-      sortPopularBtn.addEventListener('click', () => {
-        currentSort = 'popular';
-        renderStories();
-      });
-      sortDefaultBtn.addEventListener('click', () => {
-        currentSort = 'default';
-        renderStories();
-      });
-      renderStories();
-      // --- Кнопка Поделиться ---
-      const shareBtn = document.getElementById('share-btn');
-      const shareStatus = document.getElementById('share-status');
-      shareBtn.addEventListener('click', async () => {
-        const shareData = {
-          title: document.title,
-          text: 'Смотри страшные истории!',
-          url: window.location.href
-        };
-        if (navigator.share) {
-          try {
-            await navigator.share(shareData);
-          } catch (e) {}
-        } else {
-          try {
-            await navigator.clipboard.writeText(window.location.href);
-            shareStatus.style.display = 'inline';
-            setTimeout(() => shareStatus.style.display = 'none', 2000);
-          } catch (e) {
-            alert('Скопируйте ссылку вручную: ' + window.location.href);
-          }
+
+        function initializeApp() {
+            initializeTheme();
+            initializeAudio();
+            initializeFilters();
+            initializeShare();
+            renderStories();
         }
-      });
+
+        // Управление темой
+        function initializeTheme() {
+            const themeToggle = document.getElementById('theme-toggle');
+            let theme = localStorage.getItem('theme') || 'dark';
+            
+            function setTheme(mode) {
+                document.body.classList.toggle('light-mode', mode === 'light');
+                themeToggle.textContent = mode === 'light' ? '☀️' : '🌙';
+                themeToggle.title = mode === 'light' ? 'Темная тема' : 'Светлая тема';
+            }
+            
+            setTheme(theme);
+            
+            themeToggle.addEventListener('click', () => {
+                theme = theme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('theme', theme);
+                setTheme(theme);
+            });
+        }
+
+        // Управление аудио
+        function initializeAudio() {
+            const audioToggle = document.getElementById('audio-toggle');
+            const bgMusic = document.getElementById('bg-music');
+            const hoverSfx = document.getElementById('hover-sfx');
+            let musicPlaying = false;
+            let audioEnabled = localStorage.getItem('audioEnabled') !== 'false';
+
+            // Настройка громкости
+            bgMusic.volume = 0.3;
+            hoverSfx.volume = 0.2;
+
+            function updateAudioButton() {
+                audioToggle.textContent = musicPlaying ? '🔈' : '🔊';
+                audioToggle.title = musicPlaying ? 'Выключить музыку' : 'Включить музыку';
+            }
+
+            audioToggle.addEventListener('click', async () => {
+                try {
+                    if (musicPlaying) {
+                        bgMusic.pause();
+                        musicPlaying = false;
+                        audioEnabled = false;
+                    } else {
+                        await bgMusic.play();
+                        musicPlaying = true;
+                        audioEnabled = true;
+                    }
+                    localStorage.setItem('audioEnabled', audioEnabled);
+                    updateAudioButton();
+                } catch (error) {
+                    console.warn('Не удалось воспроизвести аудио:', error);
+                }
+            });
+
+            // Автовоспроизведение если было включено
+            if (audioEnabled) {
+                // Попытка автозапуска после первого взаимодействия пользователя
+                document.addEventListener('click', () => {
+                    if (audioEnabled && !musicPlaying) {
+                        bgMusic.play().then(() => {
+                            musicPlaying = true;
+                            updateAudioButton();
+                        }).catch(() => {});
+                    }
+                }, { once: true });
+            }
+
+            updateAudioButton();
+
+            // Функция для воспроизведения звука наведения
+            window.playHoverSound = function() {
+                if (audioEnabled) {
+                    hoverSfx.currentTime = 0;
+                    hoverSfx.play().catch(() => {});
+                }
+            };
+        }
+
+        // Фильтры и сортировка
+        function initializeFilters() {
+            const categorySelect = document.getElementById('category-select');
+            const sortButtons = document.querySelectorAll('.sort-btn');
+            
+            let currentCategory = 'all';
+            let currentSort = 'default';
+
+            // Заполнение категорий
+            const categories = [...new Set(stories.map(s => s.category))];
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat;
+                categorySelect.appendChild(option);
+            });
+
+            // Обработчик смены категории
+            categorySelect.addEventListener('change', (e) => {
+                currentCategory = e.target.value;
+                renderStories();
+            });
+
+            // Обработчики сортировки
+            sortButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    sortButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSort = btn.id.replace('sort-', '');
+                    renderStories();
+                });
+            });
+
+            // Функция рендеринга историй
+            window.renderStories = function() {
+                const storiesList = document.getElementById('stories-list');
+                let filtered = [...stories];
+
+                // Фильтрация по категории
+                if (currentCategory !== 'all') {
+                    filtered = filtered.filter(s => s.category === currentCategory);
+                }
+
+                // Сортировка
+                switch (currentSort) {
+                    case 'alpha':
+                        filtered.sort((a, b) => a.title.localeCompare(b.title, 'ru'));
+                        break;
+                    case 'date':
+                        filtered.sort((a, b) => (b.date || 0) - (a.date || 0));
+                        break;
+                    case 'popular':
+                        filtered.sort((a, b) => (b.views || 0) - (a.views || 0));
+                        break;
+                    default:
+                        // Порядок по умолчанию (как в массиве)
+                        break;
+                }
+
+                // Рендеринг
+                storiesList.innerHTML = '';
+                filtered.forEach(story => {
+                    const li = document.createElement('li');
+                    li.className = 'story-item';
+                    
+                    const link = document.createElement('a');
+                    link.href = `story.html?id=${story.id}`;
+                    link.className = 'story-link';
+                    
+                    link.innerHTML = `
+                        <div class="story-title">${story.title}</div>
+                        <div class="story-description">${story.description || 'Загадочная история без описания...'}</div>
+                        <div class="story-meta">
+                            <span class="story-category">${story.category}</span>
+                            <span class="story-views">${story.views || 0} просмотров</span>
+                        </div>
+                    `;
+                    
+                    // Добавление звукового эффекта
+                    link.addEventListener('mouseenter', window.playHoverSound);
+                    
+                    li.appendChild(link);
+                    storiesList.appendChild(li);
+                });
+            };
+        }
+
+        // Функция "Поделиться"
+        function initializeShare() {
+            const shareBtn = document.getElementById('share-btn');
+            const shareStatus = document.getElementById('share-status');
+
+            shareBtn.addEventListener('click', async () => {
+                const shareData = {
+                    title: document.title,
+                    text: 'Читай страшные истории!',
+                    url: window.location.href
+                };
+
+                try {
+                    if (navigator.share) {
+                        await navigator.share(shareData);
+                    } else {
+                        await navigator.clipboard.writeText(window.location.href);
+                        shareStatus.style.display = 'inline';
+                        setTimeout(() => shareStatus.style.display = 'none', 2000);
+                    }
+                } catch (error) {
+                    // Fallback для старых браузеров
+                    const textArea = document.createElement('textarea');
+                    textArea.value = window.location.href;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    shareStatus.style.display = 'inline';
+                    setTimeout(() => shareStatus.style.display = 'none', 2000);
+                }
+            });
+        }
     </script>
-    <footer style="margin-top:auto;padding:32px 0 16px 0;text-align:center;color:#666;font-size:0.95rem;">
-        © 2025 Страшные истории. Все права защищены.<br>
-        <a href="about.html" style="color:inherit;text-decoration:underline;">О проекте</a>
-    </footer>
 </body>
 </html> 
