@@ -45,11 +45,11 @@
     </footer>
 
     <script src="stories.js"></script>
+    <script src="audio.js"></script>
     <script>
         // Инициализация приложения
         document.addEventListener('DOMContentLoaded', function() {
             initializeTheme();
-            initializeAudio();
             renderStory();
         });
 
@@ -73,72 +73,7 @@
             });
         }
 
-                 // Управление аудио
-         function initializeAudio() {
-             const audioToggle = document.getElementById('audio-toggle');
-             const bgMusic = document.getElementById('bg-music');
-             const hoverSfx = document.getElementById('hover-sfx');
-             let musicPlaying = false;
-             let audioEnabled = localStorage.getItem('audioEnabled') !== 'false';
- 
-             // Настройка громкости
-             bgMusic.volume = 0.3;
-             hoverSfx.volume = 0.2;
- 
-             function updateAudioButton() {
-                 audioToggle.textContent = musicPlaying ? '🔊' : '🔈';
-                 audioToggle.title = musicPlaying ? 'Выключить музыку' : 'Включить музыку';
-             }
- 
-             audioToggle.addEventListener('click', async () => {
-                 try {
-                     if (musicPlaying) {
-                         bgMusic.pause();
-                         musicPlaying = false;
-                         audioEnabled = false;
-                     } else {
-                         await bgMusic.play();
-                         musicPlaying = true;
-                         audioEnabled = true;
-                     }
-                     localStorage.setItem('audioEnabled', audioEnabled);
-                     updateAudioButton();
-                 } catch (error) {
-                     console.warn('Не удалось воспроизвести аудио:', error);
-                 }
-             });
- 
-             // Автовоспроизведение при загрузке страницы
-             if (audioEnabled) {
-                 // Попытка автозапуска после загрузки страницы
-                 setTimeout(() => {
-                     bgMusic.play().then(() => {
-                         musicPlaying = true;
-                         updateAudioButton();
-                     }).catch(() => {
-                         // Если автозапуск не удался, пробуем после первого клика
-                         document.addEventListener('click', () => {
-                             if (audioEnabled && !musicPlaying) {
-                                 bgMusic.play().then(() => {
-                                     musicPlaying = true;
-                                     updateAudioButton();
-                                 }).catch(() => {});
-                             }
-                         }, { once: true });
-                     });
-                 }, 1000);
-             }
- 
-             updateAudioButton();
- 
-             // Функция для воспроизведения звука наведения
-             window.playHoverSound = function() {
-                 if (audioEnabled) {
-                     hoverSfx.currentTime = 0;
-                     hoverSfx.play().catch(() => {});
-                 }
-             };
-         }
+
 
         // Рендеринг истории
         function renderStory() {
