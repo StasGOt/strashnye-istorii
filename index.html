@@ -176,8 +176,8 @@
                 searchClear.style.display = searchTerm ? 'block' : 'none';
             }
 
-            // Добавляем hover-звук на кнопку очистки
-            searchClear.addEventListener('mouseenter', window.playHoverSound);
+            // Добавляем звук клика на кнопку очистки
+            searchClear.addEventListener('click', window.playClickSound);
         }
 
         // Фильтры и сортировка
@@ -279,8 +279,8 @@
                             </div>
                         `;
                         
-                        // Добавление звукового эффекта
-                        link.addEventListener('mouseenter', window.playHoverSound);
+                        // Добавление звукового эффекта при клике
+                        link.addEventListener('click', window.playClickSound);
                         
                         li.appendChild(link);
                         storiesList.appendChild(li);

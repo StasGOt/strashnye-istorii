@@ -5,7 +5,8 @@ class AudioManager {
         this.bgMusic = document.getElementById('bg-music');
         this.hoverSfx = document.getElementById('hover-sfx');
         this.musicPlaying = false;
-        this.audioEnabled = localStorage.getItem('audioEnabled') !== 'false';
+        // По умолчанию аудио выключено, включается только когда пользователь явно включит
+        this.audioEnabled = localStorage.getItem('audioEnabled') === 'true';
         this.audioLoaded = false;
         
         this.init();
@@ -43,7 +44,13 @@ class AudioManager {
 
         // Сохраняем состояние музыки при уходе со страницы
         window.addEventListener('beforeunload', () => {
-            localStorage.setItem('musicPlaying', this.musicPlaying.toString());
+            if (this.musicPlaying) {
+                localStorage.setItem('musicPlaying', 'true');
+                localStorage.setItem('audioEnabled', 'true');
+            } else {
+                localStorage.setItem('musicPlaying', 'false');
+                localStorage.setItem('audioEnabled', this.audioEnabled.toString());
+            }
         });
 
         // Обработка переключения вкладок
@@ -51,12 +58,15 @@ class AudioManager {
             if (document.hidden) {
                 // Страница скрыта - сохраняем состояние
                 localStorage.setItem('musicPlaying', this.musicPlaying.toString());
+                localStorage.setItem('audioEnabled', this.audioEnabled.toString());
             } else {
                 // Страница снова видна - восстанавливаем состояние
                 const wasPlaying = localStorage.getItem('musicPlaying') === 'true';
-                if (wasPlaying && this.audioEnabled && this.audioLoaded && !this.musicPlaying) {
+                const wasEnabled = localStorage.getItem('audioEnabled') === 'true';
+                if (wasPlaying && wasEnabled && this.audioLoaded && !this.musicPlaying) {
                     this.bgMusic.play().then(() => {
                         this.musicPlaying = true;
+                        this.audioEnabled = true;
                         this.updateAudioButton();
                     }).catch(() => {
                         // Если не удалось автоматически, пробуем после первого клика
@@ -73,11 +83,7 @@ class AudioManager {
             }
         });
 
-        // Автовоспроизведение только если пользователь ранее включил музыку
-        if (this.audioEnabled) {
-            setTimeout(() => this.tryAutoPlay(), 1000);
-        }
-
+        // Убираем автовоспроизведение - музыка включается только по желанию пользователя
         this.updateAudioButton();
     }
 
@@ -128,6 +134,7 @@ class AudioManager {
                 this.musicPlaying = false;
                 this.audioEnabled = false;
                 localStorage.setItem('musicPlaying', 'false');
+                localStorage.setItem('audioEnabled', 'false');
             } else {
                 const playPromise = this.bgMusic.play();
                 if (playPromise !== undefined) {
@@ -135,9 +142,9 @@ class AudioManager {
                     this.musicPlaying = true;
                     this.audioEnabled = true;
                     localStorage.setItem('musicPlaying', 'true');
+                    localStorage.setItem('audioEnabled', 'true');
                 }
             }
-            localStorage.setItem('audioEnabled', this.audioEnabled);
             this.updateAudioButton();
         } catch (error) {
             console.warn('Не удалось воспроизвести аудио:', error);
@@ -149,31 +156,16 @@ class AudioManager {
         }
     }
 
-    tryAutoPlay() {
-        if (this.audioLoaded) {
-            // Проверяем, была ли музыка включена ранее
-            const wasPlaying = localStorage.getItem('musicPlaying') === 'true';
-            if (wasPlaying) {
-                this.bgMusic.play().then(() => {
-                    this.musicPlaying = true;
-                    this.updateAudioButton();
-                }).catch((error) => {
-                    console.log('Автовоспроизведение заблокировано:', error);
-                    // Пробуем после первого клика
-                    document.addEventListener('click', () => {
-                        if (this.audioEnabled && !this.musicPlaying && this.audioLoaded) {
-                            this.bgMusic.play().then(() => {
-                                this.musicPlaying = true;
-                                this.updateAudioButton();
-                            }).catch(() => {});
-                        }
-                    }, { once: true });
-                });
-            }
+    playHoverSound() {
+        // Звук наведения играет только если аудио включено
+        if (this.audioEnabled && this.audioLoaded) {
+            this.hoverSfx.currentTime = 0;
+            this.hoverSfx.play().catch(() => {});
         }
     }
 
-    playHoverSound() {
+    // Новый метод для звука клика
+    playClickSound() {
         if (this.audioEnabled && this.audioLoaded) {
             this.hoverSfx.currentTime = 0;
             this.hoverSfx.play().catch(() => {});
@@ -181,10 +173,16 @@ class AudioManager {
     }
 }
 
-// Глобальная функция для воспроизведения звука наведения
+// Глобальные функции для воспроизведения звуков
 window.playHoverSound = function() {
     if (window.audioManager) {
         window.audioManager.playHoverSound();
+    }
+};
+
+window.playClickSound = function() {
+    if (window.audioManager) {
+        window.audioManager.playClickSound();
     }
 };
 
