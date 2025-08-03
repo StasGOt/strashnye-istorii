@@ -16,10 +16,7 @@
             <a href="index.html" class="nav-title">👻 Страшные истории</a>
         </div>
         <div class="nav-right">
-            <select id="category-nav" onchange="if(this.value)window.location.href='index.html#category-'+this.value;">
-                <option value="">Перейти к категории</option>
-                <!-- Категории будут добавлены через JavaScript -->
-            </select>
+            <button id="theme-toggle" class="control-btn theme-btn" title="Сменить тему">🌙</button>
         </div>
     </header>
 
@@ -44,10 +41,9 @@
                 <h3>📱 Особенности</h3>
                 <ul>
                     <li><strong>Адаптивный дизайн</strong> — удобно читать на любом устройстве</li>
-                    <li><strong>Атмосферное звуковое оформление</strong> — фоновая музыка и звуковые эффекты</li>
                     <li><strong>Темная и светлая темы</strong> — выберите комфортный режим</li>
-                    <li><strong>Удобная навигация</strong> — фильтрация по категориям и сортировка</li>
-                    <li><strong>Счетчик просмотров</strong> — отслеживайте популярность историй</li>
+                    <li><strong>Удобная навигация</strong> — фильтрация по категориям</li>
+                    <li><strong>Простой интерфейс</strong> — ничего лишнего, только истории</li>
                 </ul>
             </div>
             
@@ -66,14 +62,6 @@
         </div>
     </main>
 
-    <!-- Управляющие кнопки -->
-    <button id="audio-toggle" class="control-btn audio-btn" title="Включить/выключить музыку">🔊</button>
-    <button id="theme-toggle" class="control-btn theme-btn" title="Сменить тему">🌙</button>
-
-    <!-- Аудио элементы -->
-    <audio id="bg-music" src="background.mp3" loop preload="auto"></audio>
-    <audio id="hover-sfx" src="sfx-hover.mp3" preload="auto"></audio>
-
     <footer>
         © 2025 Страшные истории. Все права защищены.<br>
         <a href="about.html">О проекте</a>
@@ -84,8 +72,6 @@
         // Инициализация приложения
         document.addEventListener('DOMContentLoaded', function() {
             initializeTheme();
-            initializeAudio();
-            initializeCategories();
         });
 
         // Управление темой
@@ -105,67 +91,6 @@
                 theme = theme === 'dark' ? 'light' : 'dark';
                 localStorage.setItem('theme', theme);
                 setTheme(theme);
-            });
-        }
-
-        // Управление аудио
-        function initializeAudio() {
-            const audioToggle = document.getElementById('audio-toggle');
-            const bgMusic = document.getElementById('bg-music');
-            const hoverSfx = document.getElementById('hover-sfx');
-            let musicPlaying = false;
-            let audioEnabled = localStorage.getItem('audioEnabled') !== 'false';
-
-            bgMusic.volume = 0.3;
-            hoverSfx.volume = 0.2;
-
-            function updateAudioButton() {
-                audioToggle.textContent = musicPlaying ? '🔊' : '🔈';
-                audioToggle.title = musicPlaying ? 'Выключить музыку' : 'Включить музыку';
-            }
-
-            audioToggle.addEventListener('click', async () => {
-                try {
-                    if (musicPlaying) {
-                        bgMusic.pause();
-                        musicPlaying = false;
-                        audioEnabled = false;
-                    } else {
-                        await bgMusic.play();
-                        musicPlaying = true;
-                        audioEnabled = true;
-                    }
-                    localStorage.setItem('audioEnabled', audioEnabled);
-                    updateAudioButton();
-                } catch (error) {
-                    console.warn('Не удалось воспроизвести аудио:', error);
-                }
-            });
-
-            if (audioEnabled) {
-                document.addEventListener('click', () => {
-                    if (audioEnabled && !musicPlaying) {
-                        bgMusic.play().then(() => {
-                            musicPlaying = true;
-                            updateAudioButton();
-                        }).catch(() => {});
-                    }
-                }, { once: true });
-            }
-
-            updateAudioButton();
-        }
-
-        // Инициализация категорий
-        function initializeCategories() {
-            const categorySelect = document.getElementById('category-nav');
-            const categories = [...new Set(stories.map(s => s.category))];
-            
-            categories.forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat;
-                option.textContent = cat;
-                categorySelect.appendChild(option);
             });
         }
     </script>

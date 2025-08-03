@@ -17,10 +17,7 @@
             <a href="about.html">О проекте</a>
         </div>
         <div class="nav-right">
-            <select id="category-nav" onchange="if(this.value)window.location.href='index.html#category-'+this.value;">
-                <option value="">Перейти к категории</option>
-                <!-- Категории будут добавлены через JavaScript -->
-            </select>
+            <button id="theme-toggle" class="control-btn theme-btn" title="Сменить тему">🌙</button>
         </div>
     </header>
 
@@ -31,21 +28,12 @@
         </div>
     </main>
 
-    <!-- Управляющие кнопки -->
-    <button id="audio-toggle" class="control-btn audio-btn" title="Включить/выключить музыку">🔊</button>
-    <button id="theme-toggle" class="control-btn theme-btn" title="Сменить тему">🌙</button>
-
-    <!-- Аудио элементы -->
-    <audio id="bg-music" src="background.mp3" loop preload="auto"></audio>
-    <audio id="hover-sfx" src="sfx-hover.mp3" preload="auto"></audio>
-
     <footer>
         © 2025 Страшные истории. Все права защищены.<br>
         <a href="about.html">О проекте</a>
     </footer>
 
     <script src="stories.js"></script>
-    <script src="audio.js"></script>
     <script>
         // Инициализация приложения
         document.addEventListener('DOMContentLoaded', function() {
@@ -73,8 +61,6 @@
             });
         }
 
-
-
         // Рендеринг истории
         function renderStory() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -83,9 +69,6 @@
             const container = document.getElementById('story-container');
 
             if (story) {
-                // Увеличиваем счетчик просмотров
-                story.views = (story.views || 0) + 1;
-                
                 // Обновляем заголовок страницы
                 document.title = `${story.title} — Страшные истории`;
                 
@@ -95,7 +78,6 @@
                         <h1 class="story-title">${story.title}</h1>
                         <div class="story-metadata">
                             <span><span class="story-category-badge">${story.category}</span></span>
-                            <span>👁️ ${story.views} просмотров</span>
                             <span>📅 ${new Date(story.date * 1000).toLocaleDateString('ru-RU')}</span>
                         </div>
                     </div>
@@ -116,11 +98,6 @@
                         </button>
                     </div>
                 `;
-
-                // Добавляем звуковые эффекты
-                container.querySelectorAll('.action-btn').forEach(btn => {
-                    btn.addEventListener('mouseenter', window.playHoverSound);
-                });
 
             } else {
                 container.innerHTML = `
