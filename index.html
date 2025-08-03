@@ -46,7 +46,7 @@
         <!-- Левый сайдбар с категориями -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h3>📂 Категории</h3>
+                <h3>🎯 Фильтры</h3>
             </div>
             <div class="category-list">
                 <button class="category-btn active" data-category="all">
@@ -189,6 +189,7 @@
         function initializeCategories() {
             const categoryList = document.querySelector('.category-list');
             const categories = [...new Set(stories.map(s => s.category))];
+            const readingTimes = [...new Set(stories.map(s => s.readingTime).filter(Boolean))];
             
             // Иконки для категорий
             const categoryIcons = {
@@ -210,36 +211,39 @@
                 });
             }
 
-            // Кнопка "Все до 1 минуты"
-            const reading1minBtn = document.createElement('button');
-            reading1minBtn.className = 'category-btn';
-            reading1minBtn.setAttribute('data-category', 'reading-1min');
-            reading1minBtn.innerHTML = `
-                <span class="category-icon">⏱️</span>
-                <span class="category-name">До 1 минуты</span>
-            `;
-            reading1minBtn.addEventListener('click', () => {
-                document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-                reading1minBtn.classList.add('active');
-                renderStories();
-            });
-            categoryList.appendChild(reading1minBtn);
+            // Создаем разделитель для времени чтения
+            const readingTimeHeader = document.createElement('div');
+            readingTimeHeader.className = 'category-header';
+            readingTimeHeader.innerHTML = '<h4>⏱️ Время чтения</h4>';
+            categoryList.appendChild(readingTimeHeader);
 
-            // Кнопка "Все с временем"
-            const readingAllBtn = document.createElement('button');
-            readingAllBtn.className = 'category-btn';
-            readingAllBtn.setAttribute('data-category', 'reading-all');
-            readingAllBtn.innerHTML = `
-                <span class="category-icon">⏱️</span>
-                <span class="category-name">По времени</span>
-            `;
-            readingAllBtn.addEventListener('click', () => {
-                document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-                readingAllBtn.classList.add('active');
-                renderStories();
+            // Добавляем кнопки для каждого времени чтения
+            readingTimes.sort().forEach(time => {
+                const button = document.createElement('button');
+                button.className = 'category-btn reading-time-btn';
+                button.setAttribute('data-category', `reading-${time.replace(' ', '-')}`);
+                
+                button.innerHTML = `
+                    <span class="category-icon">⏱️</span>
+                    <span class="category-name">${time}</span>
+                `;
+                
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    renderStories();
+                });
+                
+                categoryList.appendChild(button);
             });
-            categoryList.appendChild(readingAllBtn);
 
+            // Создаем разделитель для категорий
+            const categoriesHeader = document.createElement('div');
+            categoriesHeader.className = 'category-header';
+            categoriesHeader.innerHTML = '<h4>📂 Категории</h4>';
+            categoryList.appendChild(categoriesHeader);
+
+            // Добавляем кнопки категорий
             categories.forEach(cat => {
                 const button = document.createElement('button');
                 button.className = 'category-btn';
@@ -293,10 +297,10 @@
                 }
 
                 // Фильтрация по категории
-                if (activeCategory === 'reading-1min') {
-                    filtered = filtered.filter(s => s.readingTime === '1 минута');
-                } else if (activeCategory === 'reading-all') {
-                    filtered = filtered.filter(s => s.readingTime);
+                if (activeCategory.startsWith('reading-')) {
+                    // Обрабатываем фильтрацию по времени чтения
+                    const readingTime = activeCategory.replace('reading-', '').replace('-', ' ');
+                    filtered = filtered.filter(s => s.readingTime === readingTime);
                 } else if (activeCategory !== 'all') {
                     filtered = filtered.filter(s => s.category === activeCategory);
                 }

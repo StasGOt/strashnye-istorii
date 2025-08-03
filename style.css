@@ -505,6 +505,45 @@ body.light-mode .error-suggestions li {
     font-weight: 500;
 }
 
+.category-header {
+    padding: 1rem 1rem 0.5rem;
+    margin: 1rem 0 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.category-header:first-child {
+    margin-top: 0;
+    border-top: none;
+}
+
+.category-header h4 {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #888;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reading-time-btn {
+    background: rgba(255, 193, 7, 0.1);
+    border-left: 3px solid transparent;
+}
+
+.reading-time-btn:hover {
+    background: rgba(255, 193, 7, 0.2);
+    border-left-color: #ffc107;
+}
+
+.reading-time-btn.active {
+    background: #ffc107;
+    color: #000;
+    border-left-color: #ffb300;
+}
+
 /* === ОСНОВНОЕ СОДЕРЖИМОЕ === */
 .main-content {
     flex: 1;
@@ -834,6 +873,27 @@ body.light-mode .category-btn:hover {
 body.light-mode .category-btn.active {
     background: #667eea;
     color: #fff;
+}
+
+body.light-mode .category-header {
+    border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .category-header h4 {
+    color: #666;
+}
+
+body.light-mode .reading-time-btn {
+    background: rgba(255, 193, 7, 0.2);
+}
+
+body.light-mode .reading-time-btn:hover {
+    background: rgba(255, 193, 7, 0.3);
+}
+
+body.light-mode .reading-time-btn.active {
+    background: #ffc107;
+    color: #000;
 }
 
 body.light-mode .theme-btn {
