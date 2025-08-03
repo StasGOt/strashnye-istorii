@@ -33,6 +33,7 @@
         <div class="nav-right">
             <button id="sort-alpha" class="sort-btn">А-Я</button>
             <button id="sort-default" class="sort-btn active">По умолчанию</button>
+            <button id="sort-reading" class="sort-btn">⏱️ Время чтения</button>
             <button id="theme-toggle" class="control-btn theme-btn" title="Сменить тему">🌙</button>
         </div>
     </header>
@@ -209,6 +210,36 @@
                 });
             }
 
+            // Кнопка "Все до 1 минуты"
+            const reading1minBtn = document.createElement('button');
+            reading1minBtn.className = 'category-btn';
+            reading1minBtn.setAttribute('data-category', 'reading-1min');
+            reading1minBtn.innerHTML = `
+                <span class="category-icon">⏱️</span>
+                <span class="category-name">До 1 минуты</span>
+            `;
+            reading1minBtn.addEventListener('click', () => {
+                document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                reading1minBtn.classList.add('active');
+                renderStories();
+            });
+            categoryList.appendChild(reading1minBtn);
+
+            // Кнопка "Все с временем"
+            const readingAllBtn = document.createElement('button');
+            readingAllBtn.className = 'category-btn';
+            readingAllBtn.setAttribute('data-category', 'reading-all');
+            readingAllBtn.innerHTML = `
+                <span class="category-icon">⏱️</span>
+                <span class="category-name">По времени</span>
+            `;
+            readingAllBtn.addEventListener('click', () => {
+                document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                readingAllBtn.classList.add('active');
+                renderStories();
+            });
+            categoryList.appendChild(readingAllBtn);
+
             categories.forEach(cat => {
                 const button = document.createElement('button');
                 button.className = 'category-btn';
@@ -262,7 +293,11 @@
                 }
 
                 // Фильтрация по категории
-                if (activeCategory !== 'all') {
+                if (activeCategory === 'reading-1min') {
+                    filtered = filtered.filter(s => s.readingTime === '1 минута');
+                } else if (activeCategory === 'reading-all') {
+                    filtered = filtered.filter(s => s.readingTime);
+                } else if (activeCategory !== 'all') {
                     filtered = filtered.filter(s => s.category === activeCategory);
                 }
 
@@ -270,6 +305,13 @@
                 switch (currentSort) {
                     case 'alpha':
                         filtered.sort((a, b) => a.title.localeCompare(b.title, 'ru'));
+                        break;
+                    case 'reading':
+                        filtered.sort((a, b) => {
+                            if (!a.readingTime) return 1;
+                            if (!b.readingTime) return -1;
+                            return a.readingTime.localeCompare(b.readingTime, 'ru');
+                        });
                         break;
                     default:
                         // Порядок по умолчанию (как в массиве)
@@ -303,6 +345,7 @@
                             <div class="story-title">${story.title}</div>
                             <div class="story-meta">
                                 <span class="story-category">${story.category}</span>
+                                <span class="story-reading-time">⏱️ ${story.readingTime || ''}</span>
                             </div>
                         `;
                         
