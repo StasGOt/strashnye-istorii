@@ -31,66 +31,71 @@
             </div>
         </div>
         <div class="nav-right">
-            <select id="category-select">
-                <option value="all">Все категории</option>
-            </select>
             <button id="sort-alpha" class="sort-btn">А-Я</button>
-            <button id="sort-date" class="sort-btn">По дате</button>
-            <button id="sort-popular" class="sort-btn">Популярные</button>
             <button id="sort-default" class="sort-btn active">По умолчанию</button>
+            <button id="theme-toggle" class="control-btn theme-btn" title="Сменить тему">🌙</button>
         </div>
     </header>
 
-    <!-- Основное содержимое -->
-    <main>
-        <h1>Страшные истории</h1>
-        <p class="subtitle">Собрание самых жутких рассказов с просторов интернета</p>
-        
-        <div class="stories-container">
-            <ul id="stories-list">
-                <!-- Скелетон для загрузки -->
-                <li class="story-item skeleton skeleton-story">
-                    <div class="skeleton-title"></div>
-                    <div class="skeleton-meta"></div>
-                </li>
-                <li class="story-item skeleton skeleton-story">
-                    <div class="skeleton-title"></div>
-                    <div class="skeleton-meta"></div>
-                </li>
-                <li class="story-item skeleton skeleton-story">
-                    <div class="skeleton-title"></div>
-                    <div class="skeleton-meta"></div>
-                </li>
-                <li class="story-item skeleton skeleton-story">
-                    <div class="skeleton-title"></div>
-                    <div class="skeleton-meta"></div>
-                </li>
-                <li class="story-item skeleton skeleton-story">
-                    <div class="skeleton-title"></div>
-                    <div class="skeleton-meta"></div>
-                </li>
-                <li class="story-item skeleton skeleton-story">
-                    <div class="skeleton-title"></div>
-                    <div class="skeleton-meta"></div>
-                </li>
-            </ul>
-        </div>
+    <!-- Основной контейнер с сайдбаром -->
+    <div class="main-container">
+        <!-- Левый сайдбар с категориями -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>📂 Категории</h3>
+            </div>
+            <div class="category-list">
+                <button class="category-btn active" data-category="all">
+                    <span class="category-icon">📚</span>
+                    <span class="category-name">Все истории</span>
+                </button>
+                <!-- Категории будут добавлены динамически -->
+            </div>
+        </aside>
 
-        <div class="share-section">
-            <button id="share-btn" class="share-button">
-                <span>📤</span> Поделиться
-            </button>
-            <span id="share-status" class="share-status">Ссылка скопирована!</span>
-        </div>
-    </main>
+        <!-- Основное содержимое -->
+        <main class="main-content">
+            <h1>Страшные истории</h1>
+            <p class="subtitle">Собрание самых жутких рассказов с просторов интернета</p>
+            
+            <div class="stories-container">
+                <ul id="stories-list">
+                    <!-- Скелетон для загрузки -->
+                    <li class="story-item skeleton skeleton-story">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-meta"></div>
+                    </li>
+                    <li class="story-item skeleton skeleton-story">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-meta"></div>
+                    </li>
+                    <li class="story-item skeleton skeleton-story">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-meta"></div>
+                    </li>
+                    <li class="story-item skeleton skeleton-story">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-meta"></div>
+                    </li>
+                    <li class="story-item skeleton skeleton-story">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-meta"></div>
+                    </li>
+                    <li class="story-item skeleton skeleton-story">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-meta"></div>
+                    </li>
+                </ul>
+            </div>
 
-    <!-- Управляющие кнопки -->
-    <button id="audio-toggle" class="control-btn audio-btn" title="Включить/выключить музыку">🔊</button>
-    <button id="theme-toggle" class="control-btn theme-btn" title="Сменить тему">🌙</button>
-
-    <!-- Аудио элементы -->
-    <audio id="bg-music" src="background.mp3" loop preload="auto"></audio>
-    <audio id="hover-sfx" src="sfx-hover.mp3" preload="auto"></audio>
+            <div class="share-section">
+                <button id="share-btn" class="share-button">
+                    <span>📤</span> Поделиться
+                </button>
+                <span id="share-status" class="share-status">Ссылка скопирована!</span>
+            </div>
+        </main>
+    </div>
 
     <footer>
         © 2025 Страшные истории. Все права защищены.<br>
@@ -98,7 +103,6 @@
     </footer>
 
     <script src="stories.js"></script>
-    <script src="audio.js"></script>
     <script>
         // Инициализация приложения
         document.addEventListener('DOMContentLoaded', function() {
@@ -119,6 +123,7 @@
             initializeFilters();
             initializeSearch();
             initializeShare();
+            initializeCategories();
             renderStories();
         }
 
@@ -141,8 +146,6 @@
                 setTheme(theme);
             });
         }
-
-                 
 
         // Поиск
         function initializeSearch() {
@@ -175,33 +178,59 @@
             function updateSearchClear(searchTerm) {
                 searchClear.style.display = searchTerm ? 'block' : 'none';
             }
+        }
 
-            // Добавляем hover-звук на кнопку очистки
-            searchClear.addEventListener('mouseenter', window.playHoverSound);
+        // Инициализация категорий в сайдбаре
+        function initializeCategories() {
+            const categoryList = document.querySelector('.category-list');
+            const categories = [...new Set(stories.map(s => s.category))];
+            
+            // Иконки для категорий
+            const categoryIcons = {
+                'Паранормальное': '👻',
+                'Технохоррор': '💻',
+                'Проклятия': '🔮',
+                'Убийцы / маньяки': '🔪'
+            };
+
+            // Добавляем обработчик для кнопки "Все истории"
+            const allStoriesBtn = document.querySelector('.category-btn[data-category="all"]');
+            if (allStoriesBtn) {
+                allStoriesBtn.addEventListener('click', () => {
+                    // Убираем активный класс со всех кнопок
+                    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                    // Добавляем активный класс к кнопке "Все истории"
+                    allStoriesBtn.classList.add('active');
+                    renderStories();
+                });
+            }
+
+            categories.forEach(cat => {
+                const button = document.createElement('button');
+                button.className = 'category-btn';
+                button.setAttribute('data-category', cat);
+                
+                button.innerHTML = `
+                    <span class="category-icon">${categoryIcons[cat] || '📖'}</span>
+                    <span class="category-name">${cat}</span>
+                `;
+                
+                button.addEventListener('click', () => {
+                    // Убираем активный класс со всех кнопок
+                    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                    // Добавляем активный класс к выбранной кнопке
+                    button.classList.add('active');
+                    renderStories();
+                });
+                
+                categoryList.appendChild(button);
+            });
         }
 
         // Фильтры и сортировка
         function initializeFilters() {
-            const categorySelect = document.getElementById('category-select');
             const sortButtons = document.querySelectorAll('.sort-btn');
-            
-            let currentCategory = 'all';
             let currentSort = 'default';
-
-            // Заполнение категорий
-            const categories = [...new Set(stories.map(s => s.category))];
-            categories.forEach(cat => {
-                const option = document.createElement('option');
-                option.value = cat;
-                option.textContent = cat;
-                categorySelect.appendChild(option);
-            });
-
-            // Обработчик смены категории
-            categorySelect.addEventListener('change', (e) => {
-                currentCategory = e.target.value;
-                renderStories();
-            });
 
             // Обработчики сортировки
             sortButtons.forEach(btn => {
@@ -217,6 +246,7 @@
             window.renderStories = function() {
                 const storiesList = document.getElementById('stories-list');
                 const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+                const activeCategory = document.querySelector('.category-btn.active')?.getAttribute('data-category') || 'all';
                 let filtered = [...stories];
 
                 // Поиск по заголовку и тексту
@@ -228,20 +258,14 @@
                 }
 
                 // Фильтрация по категории
-                if (currentCategory !== 'all') {
-                    filtered = filtered.filter(s => s.category === currentCategory);
+                if (activeCategory !== 'all') {
+                    filtered = filtered.filter(s => s.category === activeCategory);
                 }
 
                 // Сортировка
                 switch (currentSort) {
                     case 'alpha':
                         filtered.sort((a, b) => a.title.localeCompare(b.title, 'ru'));
-                        break;
-                    case 'date':
-                        filtered.sort((a, b) => (b.date || 0) - (a.date || 0));
-                        break;
-                    case 'popular':
-                        filtered.sort((a, b) => (b.views || 0) - (a.views || 0));
                         break;
                     default:
                         // Порядок по умолчанию (как в массиве)
@@ -275,12 +299,8 @@
                             <div class="story-title">${story.title}</div>
                             <div class="story-meta">
                                 <span class="story-category">${story.category}</span>
-                                <span class="story-views">${story.views || 0} просмотров</span>
                             </div>
                         `;
-                        
-                        // Добавление звукового эффекта
-                        link.addEventListener('mouseenter', window.playHoverSound);
                         
                         li.appendChild(link);
                         storiesList.appendChild(li);
