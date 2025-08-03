@@ -8,14 +8,27 @@
     <meta name="keywords" content="страшные истории, страшилки, ужасы, мистические рассказы, хоррор, пугающие истории, легенды, интернет истории">
     <link rel="icon" type="image/png" href="./favicon.png" />
     <link rel="stylesheet" href="./style.css">
-    <base href="/strashnye-istorii/">
 </head>
 <body>
+    <!-- Прелоадер -->
+    <div id="preloader" class="preloader">
+        <div class="preloader-content">
+            <div class="preloader-spinner"></div>
+            <p>Загружаем страшные истории...</p>
+        </div>
+    </div>
+
     <!-- Фиксированная навигация -->
     <header class="fixed-header">
         <div class="nav-left">
             <span class="nav-title">👻 Страшные истории</span>
             <a href="about.html">О проекте</a>
+        </div>
+        <div class="nav-center">
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="🔍 Поиск историй..." class="search-input">
+                <button id="search-clear" class="search-clear" title="Очистить поиск">✕</button>
+            </div>
         </div>
         <div class="nav-right">
             <select id="category-select">
@@ -35,7 +48,31 @@
         
         <div class="stories-container">
             <ul id="stories-list">
-                <!-- Истории будут добавлены через JavaScript -->
+                <!-- Скелетон для загрузки -->
+                <li class="story-item skeleton skeleton-story">
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-meta"></div>
+                </li>
+                <li class="story-item skeleton skeleton-story">
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-meta"></div>
+                </li>
+                <li class="story-item skeleton skeleton-story">
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-meta"></div>
+                </li>
+                <li class="story-item skeleton skeleton-story">
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-meta"></div>
+                </li>
+                <li class="story-item skeleton skeleton-story">
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-meta"></div>
+                </li>
+                <li class="story-item skeleton skeleton-story">
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-meta"></div>
+                </li>
             </ul>
         </div>
 
@@ -64,6 +101,15 @@
     <script>
         // Инициализация приложения
         document.addEventListener('DOMContentLoaded', function() {
+            // Скрываем прелоадер
+            setTimeout(() => {
+                const preloader = document.getElementById('preloader');
+                preloader.classList.add('hidden');
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 500);
+            }, 1000);
+
             initializeApp();
         });
 
@@ -71,6 +117,7 @@
             initializeTheme();
             initializeAudio();
             initializeFilters();
+            initializeSearch();
             initializeShare();
             renderStories();
         }
@@ -162,6 +209,42 @@
              };
          }
 
+        // Поиск
+        function initializeSearch() {
+            const searchInput = document.getElementById('search-input');
+            const searchClear = document.getElementById('search-clear');
+            
+            // Обработчик ввода в поиск
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                updateSearchClear(searchTerm);
+                renderStories();
+            });
+
+            // Очистка поиска
+            searchClear.addEventListener('click', () => {
+                searchInput.value = '';
+                updateSearchClear('');
+                renderStories();
+                searchInput.focus();
+            });
+
+            // Обработка Enter для поиска
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    renderStories();
+                }
+            });
+
+            function updateSearchClear(searchTerm) {
+                searchClear.style.display = searchTerm ? 'block' : 'none';
+            }
+
+            // Добавляем hover-звук на кнопку очистки
+            searchClear.addEventListener('mouseenter', window.playHoverSound);
+        }
+
         // Фильтры и сортировка
         function initializeFilters() {
             const categorySelect = document.getElementById('category-select');
@@ -198,7 +281,16 @@
             // Функция рендеринга историй
             window.renderStories = function() {
                 const storiesList = document.getElementById('stories-list');
+                const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
                 let filtered = [...stories];
+
+                // Поиск по заголовку и тексту
+                if (searchTerm) {
+                    filtered = filtered.filter(story => 
+                        story.title.toLowerCase().includes(searchTerm) ||
+                        story.text.toLowerCase().includes(searchTerm)
+                    );
+                }
 
                 // Фильтрация по категории
                 if (currentCategory !== 'all') {
@@ -221,32 +313,55 @@
                         break;
                 }
 
+                // Показываем количество найденных историй
+                updateSearchResults(filtered.length, searchTerm);
+
                 // Рендеринг
                 storiesList.innerHTML = '';
-                filtered.forEach(story => {
-                    const li = document.createElement('li');
-                    li.className = 'story-item';
-                    
-                    const link = document.createElement('a');
-                    link.href = `story.html?id=${story.id}`;
-                    link.className = 'story-link';
-                    
-                    link.innerHTML = `
-                        <div class="story-title">${story.title}</div>
-                        <div class="story-description">${story.description || 'Загадочная история без описания...'}</div>
-                        <div class="story-meta">
-                            <span class="story-category">${story.category}</span>
-                            <span class="story-views">${story.views || 0} просмотров</span>
-                        </div>
+                if (filtered.length === 0) {
+                    storiesList.innerHTML = `
+                        <li class="no-results">
+                            <div class="no-results-content">
+                                <h3>🔍 Ничего не найдено</h3>
+                                <p>Попробуйте изменить поисковый запрос или категорию</p>
+                            </div>
+                        </li>
                     `;
-                    
-                    // Добавление звукового эффекта
-                    link.addEventListener('mouseenter', window.playHoverSound);
-                    
-                    li.appendChild(link);
-                    storiesList.appendChild(li);
-                });
+                } else {
+                    filtered.forEach(story => {
+                        const li = document.createElement('li');
+                        li.className = 'story-item';
+                        
+                        const link = document.createElement('a');
+                        link.href = `story.html?id=${story.id}`;
+                        link.className = 'story-link';
+                        
+                        link.innerHTML = `
+                            <div class="story-title">${story.title}</div>
+                            <div class="story-meta">
+                                <span class="story-category">${story.category}</span>
+                                <span class="story-views">${story.views || 0} просмотров</span>
+                            </div>
+                        `;
+                        
+                        // Добавление звукового эффекта
+                        link.addEventListener('mouseenter', window.playHoverSound);
+                        
+                        li.appendChild(link);
+                        storiesList.appendChild(li);
+                    });
+                }
             };
+        }
+
+        // Обновление результатов поиска
+        function updateSearchResults(count, searchTerm) {
+            const subtitle = document.querySelector('.subtitle');
+            if (searchTerm) {
+                subtitle.textContent = `Найдено ${count} историй по запросу "${searchTerm}"`;
+            } else {
+                subtitle.textContent = 'Собрание самых жутких рассказов с просторов интернета';
+            }
         }
 
         // Функция "Поделиться"

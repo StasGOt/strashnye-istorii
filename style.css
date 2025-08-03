@@ -3,6 +3,10 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     background: #0a0a0a;
     color: #e0e0e0;
@@ -14,6 +18,211 @@ body {
     padding: 0;
     line-height: 1.6;
     overflow-x: hidden;
+}
+
+/* === ПРЕЛОАДЕР === */
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0a0a0a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+
+.preloader.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.preloader-content {
+    text-align: center;
+    color: #e0e0e0;
+}
+
+.preloader-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #333;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* === СКЕЛЕТОН ДЛЯ ИСТОРИЙ === */
+.skeleton {
+    background: linear-gradient(90deg, #181818 25%, #232323 50%, #181818 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+
+.skeleton-story {
+    height: 120px;
+    margin: 16px 0;
+    padding: 18px 0;
+}
+
+.skeleton-title {
+    height: 24px;
+    width: 70%;
+    margin: 0 auto 8px;
+    border-radius: 4px;
+}
+
+.skeleton-meta {
+    height: 14px;
+    width: 60%;
+    margin: 0 auto;
+    border-radius: 4px;
+}
+
+/* === 404 СТРАНИЦА === */
+.error-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+.error-content {
+    background: #181818;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+    padding: 3rem 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.error-title {
+    font-size: 6rem;
+    font-weight: bold;
+    color: #667eea;
+    margin: 0;
+    text-shadow: 0 4px 24px rgba(102, 126, 234, 0.6);
+    line-height: 1;
+}
+
+.error-subtitle {
+    font-size: 1.8rem;
+    color: #fff;
+    margin: 1rem 0;
+    font-weight: 600;
+}
+
+.error-description {
+    font-size: 1.1rem;
+    color: #b0b0b0;
+    margin: 1.5rem 0;
+    line-height: 1.6;
+}
+
+.error-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+}
+
+.error-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.error-suggestions {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: left;
+}
+
+.error-suggestions h3 {
+    color: #fff;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.error-suggestions ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.error-suggestions li {
+    margin: 0.5rem 0;
+    color: #b0b0b0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.error-suggestions li::before {
+    content: '•';
+    color: #667eea;
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+}
+
+.error-suggestions a {
+    color: #667eea;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.error-suggestions a:hover {
+    color: #764ba2;
+}
+
+/* Светлая тема для 404 */
+body.light-mode .error-content {
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .error-title {
+    color: #667eea;
+    text-shadow: none;
+}
+
+body.light-mode .error-subtitle {
+    color: #232323;
+}
+
+body.light-mode .error-description {
+    color: #444;
+}
+
+body.light-mode .error-suggestions {
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .error-suggestions h3 {
+    color: #232323;
+}
+
+body.light-mode .error-suggestions li {
+    color: #666;
 }
 
 /* === ФИКСИРОВАННАЯ НАВИГАЦИЯ === */
@@ -37,6 +246,62 @@ body {
     display: flex;
     align-items: center;
     gap: 1.5rem;
+}
+
+.nav-center {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    max-width: 400px;
+    margin: 0 2rem;
+}
+
+.search-container {
+    position: relative;
+    width: 100%;
+    max-width: 350px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 40px 8px 12px;
+    border: none;
+    border-radius: 25px;
+    background: #232323;
+    color: #e0e0e0;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.search-input::placeholder {
+    color: #888;
+}
+
+.search-input:focus {
+    outline: none;
+    background: #2a2a2a;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+}
+
+.search-clear {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    display: none;
+}
+
+.search-clear:hover {
+    background: #333;
+    color: #fff;
 }
 
 .nav-title {
@@ -121,6 +386,7 @@ h1 {
     color: #b0b0b0;
     font-size: 1.2rem;
     font-weight: 300;
+    transition: all 0.3s ease;
 }
 
 /* === КОНТЕЙНЕР ИСТОРИЙ === */
@@ -165,13 +431,7 @@ h1 {
     font-size: 1.2rem;
     letter-spacing: 1px;
     text-shadow: 0 0 6px rgba(255, 255, 255, 0.1);
-    margin-bottom: 2px;
-}
-
-.story-description {
-    font-size: 0.97rem;
-    color: #888;
-    margin-top: 2px;
+    margin-bottom: 8px;
 }
 
 .story-meta {
@@ -181,7 +441,6 @@ h1 {
     gap: 12px;
     font-size: 0.9rem;
     color: #666;
-    margin-top: 8px;
 }
 
 .story-category {
@@ -190,6 +449,31 @@ h1 {
 
 .story-views {
     color: #666;
+}
+
+/* === ПУСТЫЕ РЕЗУЛЬТАТЫ === */
+.no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.no-results-content {
+    background: #181818;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+.no-results-content h3 {
+    color: #667eea;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.no-results-content p {
+    color: #b0b0b0;
+    font-size: 1.1rem;
 }
 
 /* === СЕКЦИЯ ПОДЕЛИТЬСЯ === */
@@ -307,6 +591,25 @@ body.light-mode .fixed-header a:hover {
     background: #f0f0f0;
 }
 
+body.light-mode .search-input {
+    background: #f0f0f0;
+    color: #181818;
+}
+
+body.light-mode .search-input:focus {
+    background: #e0e0e0;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.3);
+}
+
+body.light-mode .search-input::placeholder {
+    color: #666;
+}
+
+body.light-mode .search-clear:hover {
+    background: #d0d0d0;
+    color: #181818;
+}
+
 body.light-mode .fixed-header select {
     background: #f0f0f0;
     color: #181818;
@@ -343,15 +646,24 @@ body.light-mode .story-title {
     color: #181818;
 }
 
-body.light-mode .story-description {
-    color: #444;
-}
-
 body.light-mode .story-meta {
     color: #666;
 }
 
 body.light-mode .story-category {
+    color: #666;
+}
+
+body.light-mode .no-results-content {
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .no-results-content h3 {
+    color: #667eea;
+}
+
+body.light-mode .no-results-content p {
     color: #666;
 }
 
@@ -653,6 +965,16 @@ body.light-mode .contact-info a:hover {
         justify-content: center;
     }
     
+    .nav-center {
+        order: -1;
+        margin: 0;
+        max-width: 100%;
+    }
+    
+    .search-container {
+        max-width: 100%;
+    }
+    
     .nav-title {
         font-size: 1.2rem;
     }
@@ -696,6 +1018,14 @@ body.light-mode .contact-info a:hover {
         top: 80px;
         right: 85px;
     }
+    
+    .error-title {
+        font-size: 4rem;
+    }
+    
+    .error-subtitle {
+        font-size: 1.5rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -717,6 +1047,11 @@ body.light-mode .contact-info a:hover {
     .fixed-header select {
         min-width: 120px;
         font-size: 0.9rem;
+    }
+    
+    .search-input {
+        font-size: 0.85rem;
+        padding: 6px 35px 6px 10px;
     }
     
     main {
@@ -762,6 +1097,19 @@ body.light-mode .contact-info a:hover {
     
     .theme-btn {
         right: 75px;
+    }
+    
+    .error-title {
+        font-size: 3rem;
+    }
+    
+    .error-subtitle {
+        font-size: 1.3rem;
+    }
+    
+    .error-actions {
+        flex-direction: column;
+        align-items: center;
     }
 }
 

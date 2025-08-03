@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Страница не найдена | Страшные истории</title>
+    <meta name="description" content="Страница не найдена. Вернитесь к страшным историям.">
+    <link rel="icon" type="image/png" href="./favicon.png" />
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <!-- Фиксированная навигация -->
+    <header class="fixed-header">
+        <div class="nav-left">
+            <a href="index.html" class="nav-title">👻 Страшные истории</a>
+        </div>
+        <div class="nav-right">
+            <a href="about.html">О проекте</a>
+        </div>
+    </header>
+
+    <!-- Основное содержимое -->
+    <main>
+        <div class="error-container">
+            <div class="error-content">
+                <h1 class="error-title">404</h1>
+                <h2 class="error-subtitle">Страница не найдена</h2>
+                <p class="error-description">
+                    Похоже, что история, которую вы ищете, исчезла в темноте... 
+                    Возможно, она была удалена или никогда не существовала.
+                </p>
+                
+                <div class="error-actions">
+                    <a href="index.html" class="error-btn btn-primary">
+                        🏠 На главную
+                    </a>
+                    <button onclick="getRandomStory()" class="error-btn btn-secondary">
+                        🎲 Случайная история
+                    </button>
+                </div>
+                
+                <div class="error-suggestions">
+                    <h3>💡 Попробуйте:</h3>
+                    <ul>
+                        <li>Проверить правильность ссылки</li>
+                        <li>Вернуться на <a href="index.html">главную страницу</a></li>
+                        <li>Выбрать случайную историю</li>
+                        <li>Использовать поиск по категориям</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Управляющие кнопки -->
+    <button id="audio-toggle" class="control-btn audio-btn" title="Включить/выключить музыку">🔊</button>
+    <button id="theme-toggle" class="control-btn theme-btn" title="Сменить тему">🌙</button>
+
+    <!-- Аудио элементы -->
+    <audio id="bg-music" src="background.mp3" loop preload="auto"></audio>
+    <audio id="hover-sfx" src="sfx-hover.mp3" preload="auto"></audio>
+
+    <footer>
+        © 2025 Страшные истории. Все права защищены.<br>
+        <a href="about.html">О проекте</a>
+    </footer>
+
+    <script src="stories.js"></script>
+    <script>
+        // Инициализация приложения
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTheme();
+            initializeAudio();
+        });
+
+        // Управление темой
+        function initializeTheme() {
+            const themeToggle = document.getElementById('theme-toggle');
+            let theme = localStorage.getItem('theme') || 'dark';
+            
+            function setTheme(mode) {
+                document.body.classList.toggle('light-mode', mode === 'light');
+                themeToggle.textContent = mode === 'light' ? '☀️' : '🌙';
+                themeToggle.title = mode === 'light' ? 'Темная тема' : 'Светлая тема';
+            }
+            
+            setTheme(theme);
+            
+            themeToggle.addEventListener('click', () => {
+                theme = theme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('theme', theme);
+                setTheme(theme);
+            });
+        }
+
+        // Управление аудио
+        function initializeAudio() {
+            const audioToggle = document.getElementById('audio-toggle');
+            const bgMusic = document.getElementById('bg-music');
+            const hoverSfx = document.getElementById('hover-sfx');
+            let musicPlaying = false;
+            let audioEnabled = localStorage.getItem('audioEnabled') !== 'false';
+
+            bgMusic.volume = 0.3;
+            hoverSfx.volume = 0.2;
+
+            function updateAudioButton() {
+                audioToggle.textContent = musicPlaying ? '🔊' : '🔈';
+                audioToggle.title = musicPlaying ? 'Выключить музыку' : 'Включить музыку';
+            }
+
+            audioToggle.addEventListener('click', async () => {
+                try {
+                    if (musicPlaying) {
+                        bgMusic.pause();
+                        musicPlaying = false;
+                        audioEnabled = false;
+                    } else {
+                        await bgMusic.play();
+                        musicPlaying = true;
+                        audioEnabled = true;
+                    }
+                    localStorage.setItem('audioEnabled', audioEnabled);
+                    updateAudioButton();
+                } catch (error) {
+                    console.warn('Не удалось воспроизвести аудио:', error);
+                }
+            });
+
+            if (audioEnabled) {
+                document.addEventListener('click', () => {
+                    if (audioEnabled && !musicPlaying) {
+                        bgMusic.play().then(() => {
+                            musicPlaying = true;
+                            updateAudioButton();
+                        }).catch(() => {});
+                    }
+                }, { once: true });
+            }
+
+            updateAudioButton();
+
+            // Функция для воспроизведения звука наведения
+            window.playHoverSound = function() {
+                if (audioEnabled) {
+                    hoverSfx.currentTime = 0;
+                    hoverSfx.play().catch(() => {});
+                }
+            };
+
+            // Добавляем hover-звук на кнопки
+            document.querySelectorAll('.error-btn').forEach(btn => {
+                btn.addEventListener('mouseenter', window.playHoverSound);
+            });
+        }
+
+        // Случайная история
+        function getRandomStory() {
+            const randomStory = stories[Math.floor(Math.random() * stories.length)];
+            window.location.href = `story.html?id=${randomStory.id}`;
+        }
+    </script>
+</body>
+</html> 
