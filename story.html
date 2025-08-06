@@ -39,9 +39,39 @@
     <script>
         // Инициализация приложения
         document.addEventListener('DOMContentLoaded', function() {
+            initializeReadSystem();
             initializeTheme();
             renderStory();
         });
+
+        // Система прочитанных историй
+        function initializeReadSystem() {
+            // Получаем список прочитанных историй из localStorage
+            window.readStories = JSON.parse(localStorage.getItem('readStories') || '[]');
+            
+            // Функция для пометки истории как прочитанной/непрочитанной
+            window.toggleReadStatus = function(storyId) {
+                if (window.readStories.includes(storyId)) {
+                    window.readStories = window.readStories.filter(id => id !== storyId);
+                } else {
+                    window.readStories.push(storyId);
+                }
+                localStorage.setItem('readStories', JSON.stringify(window.readStories));
+                
+                // Обновляем кнопку
+                const readToggleBtn = document.getElementById('read-toggle');
+                if (readToggleBtn) {
+                    const isRead = window.readStories.includes(storyId);
+                    readToggleBtn.innerHTML = isRead ? '✅ Прочитано' : '📖 Отметить как прочитанное';
+                    readToggleBtn.className = `action-btn btn-secondary read-toggle-story ${isRead ? 'read' : 'unread'}`;
+                }
+            };
+            
+            // Функция проверки статуса прочитанности
+            window.isStoryRead = function(storyId) {
+                return window.readStories.includes(storyId);
+            };
+        }
 
         // Управление темой
         function initializeTheme() {
@@ -75,6 +105,7 @@
                 document.title = `${story.title} — Страшные истории`;
                 
                 // Рендерим историю
+                const isRead = window.isStoryRead(story.id);
                 container.innerHTML = `
                     <div class="story-header">
                         <h1 class="story-title">${story.title}</h1>
@@ -92,6 +123,9 @@
                         <a href="index.html" class="action-btn btn-primary">
                             ← Все истории
                         </a>
+                        <button id="read-toggle" onclick="toggleReadStatus('${story.id}')" class="action-btn btn-secondary read-toggle-story ${isRead ? 'read' : 'unread'}">
+                            ${isRead ? '✅ Прочитано' : '📖 Отметить как прочитанное'}
+                        </button>
                         <button onclick="shareStory()" class="action-btn btn-secondary">
                             📤 Поделиться
                         </button>
