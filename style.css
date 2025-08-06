@@ -420,6 +420,33 @@ body.light-mode .error-suggestions li {
     z-index: 100;
 }
 
+/* Стилизованный скроллбар для сайдбара */
+.sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+/* Firefox скроллбар */
+.sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: #667eea rgba(255, 255, 255, 0.05);
+}
+
 .sidebar-header {
     padding: 0 1.5rem 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -450,7 +477,7 @@ body.light-mode .error-suggestions li {
     padding: 0.75rem 1rem;
     background: transparent;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     color: #b0b0b0;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -477,14 +504,14 @@ body.light-mode .error-suggestions li {
 }
 
 .category-btn:hover {
-    background: #232323;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
     color: #e0e0e0;
     transform: translateX(4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
 }
 
 .category-btn.active {
-    background: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: #fff;
     box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
     transform: translateX(4px);
@@ -851,6 +878,23 @@ body.light-mode .sidebar {
     border-right: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+/* Стилизованный скроллбар для светлой темы */
+body.light-mode .sidebar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .sidebar::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+body.light-mode .sidebar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+body.light-mode .sidebar {
+    scrollbar-color: #667eea rgba(0, 0, 0, 0.05);
+}
+
 body.light-mode .sidebar-header {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
@@ -864,14 +908,14 @@ body.light-mode .category-btn {
 }
 
 body.light-mode .category-btn:hover {
-    background: #f0f0f0;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
     color: #181818;
     transform: translateX(4px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
 }
 
 body.light-mode .category-btn.active {
-    background: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: #fff;
 }
 
@@ -1959,22 +2003,7 @@ body.light-mode .contact-link:hover {
     animation: pulse 2s infinite;
 }
 
-.clear-filters-btn {
-    background: rgba(255, 69, 58, 0.2);
-    color: #ff453a;
-    border: 1px solid rgba(255, 69, 58, 0.3);
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-left: auto;
-}
 
-.clear-filters-btn:hover {
-    background: rgba(255, 69, 58, 0.3);
-    transform: scale(1.05);
-}
 
 .category-header {
     display: flex;
@@ -2026,15 +2055,7 @@ body.light-mode .read-toggle-btn:hover {
     background: rgba(102, 126, 234, 0.2);
 }
 
-body.light-mode .clear-filters-btn {
-    background: rgba(255, 69, 58, 0.1);
-    color: #d32f2f;
-    border-color: rgba(255, 69, 58, 0.2);
-}
 
-body.light-mode .clear-filters-btn:hover {
-    background: rgba(255, 69, 58, 0.2);
-}
 
 body.light-mode .category-header {
     border-top-color: rgba(0, 0, 0, 0.1);
@@ -2060,9 +2081,7 @@ body.light-mode .category-header h4 {
         gap: 8px;
     }
 
-    .clear-filters-btn {
-        align-self: flex-end;
-    }
+
 
     .story-meta {
         flex-wrap: wrap;

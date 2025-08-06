@@ -65,11 +65,6 @@
                     <span class="category-icon">✅</span>
                     <span class="category-name">Прочитанные</span>
                 </button>
-                <!-- Множественный выбор категорий -->
-                <div class="category-header">
-                    <h4>🎯Удалить</h4>
-                    <button id="clear-filters" class="clear-filters-btn">Сбросить фильтры</button>
-                </div>
                 <!-- Категории будут добавлены динамически -->
             </div>
         </aside>
@@ -286,19 +281,7 @@
                 });
             });
 
-            // Кнопка сброса фильтров
-            const clearFiltersBtn = document.getElementById('clear-filters');
-            if (clearFiltersBtn) {
-                clearFiltersBtn.addEventListener('click', () => {
-                    window.selectedCategories.clear();
-                    window.selectedReadingTimes.clear();
-                    window.selectedReadStatus = null;
-                    
-                    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active', 'multi-selected'));
-                    document.querySelector('.category-btn[data-category="all"]').classList.add('active');
-                    renderStories();
-                });
-            }
+
 
             // Создаем разделитель для времени чтения
             const readingTimeHeader = document.createElement('div');
