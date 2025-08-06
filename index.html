@@ -53,6 +53,23 @@
                     <span class="category-icon">📚</span>
                     <span class="category-name">Все истории</span>
                 </button>
+                <!-- Фильтр по статусу прочитанности -->
+                <div class="category-header">
+                    <h4>📖 Статус чтения</h4>
+                </div>
+                <button class="category-btn read-status-btn" data-read-status="unread">
+                    <span class="category-icon">📖</span>
+                    <span class="category-name">Непрочитанные</span>
+                </button>
+                <button class="category-btn read-status-btn" data-read-status="read">
+                    <span class="category-icon">✅</span>
+                    <span class="category-name">Прочитанные</span>
+                </button>
+                <!-- Множественный выбор категорий -->
+                <div class="category-header">
+                    <h4>🎯 Множественный выбор</h4>
+                    <button id="clear-filters" class="clear-filters-btn">Сбросить фильтры</button>
+                </div>
                 <!-- Категории будут добавлены динамически -->
             </div>
         </aside>
@@ -126,6 +143,7 @@
 
         function initializeApp() {
             initializeTheme();
+            initializeReadSystem();
             initializeFilters();
             initializeSearch();
             initializeShare();
@@ -152,6 +170,28 @@
                 localStorage.setItem('theme', theme);
                 setTheme(theme);
             });
+        }
+
+        // Система прочитанных историй
+        function initializeReadSystem() {
+            // Получаем список прочитанных историй из localStorage
+            window.readStories = JSON.parse(localStorage.getItem('readStories') || '[]');
+            
+            // Функция для пометки истории как прочитанной/непрочитанной
+            window.toggleReadStatus = function(storyId) {
+                if (window.readStories.includes(storyId)) {
+                    window.readStories = window.readStories.filter(id => id !== storyId);
+                } else {
+                    window.readStories.push(storyId);
+                }
+                localStorage.setItem('readStories', JSON.stringify(window.readStories));
+                renderStories(); // Обновляем отображение
+            };
+            
+            // Функция проверки статуса прочитанности
+            window.isStoryRead = function(storyId) {
+                return window.readStories.includes(storyId);
+            };
         }
 
         // Поиск
@@ -193,6 +233,11 @@
             const categories = [...new Set(stories.map(s => s.category))];
             const readingTimes = [...new Set(stories.map(s => s.readingTime).filter(Boolean))];
             
+            // Переменные для множественного выбора
+            window.selectedCategories = new Set();
+            window.selectedReadingTimes = new Set();
+            window.selectedReadStatus = null;
+            
             // Иконки для категорий
             const categoryIcons = {
                 'Паранормальное': '👻',
@@ -205,10 +250,52 @@
             const allStoriesBtn = document.querySelector('.category-btn[data-category="all"]');
             if (allStoriesBtn) {
                 allStoriesBtn.addEventListener('click', () => {
+                    // Сбрасываем все фильтры
+                    window.selectedCategories.clear();
+                    window.selectedReadingTimes.clear();
+                    window.selectedReadStatus = null;
+                    
                     // Убираем активный класс со всех кнопок
-                    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active', 'multi-selected'));
                     // Добавляем активный класс к кнопке "Все истории"
                     allStoriesBtn.classList.add('active');
+                    renderStories();
+                });
+            }
+
+            // Обработчики для фильтров по статусу чтения
+            document.querySelectorAll('.read-status-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const readStatus = btn.getAttribute('data-read-status');
+                    
+                    // Убираем активный класс с "Все истории"
+                    document.querySelector('.category-btn[data-category="all"]').classList.remove('active');
+                    
+                    // Переключаем статус
+                    if (window.selectedReadStatus === readStatus) {
+                        window.selectedReadStatus = null;
+                        btn.classList.remove('active');
+                    } else {
+                        // Убираем активный класс с других кнопок статуса
+                        document.querySelectorAll('.read-status-btn').forEach(b => b.classList.remove('active'));
+                        window.selectedReadStatus = readStatus;
+                        btn.classList.add('active');
+                    }
+                    
+                    renderStories();
+                });
+            });
+
+            // Кнопка сброса фильтров
+            const clearFiltersBtn = document.getElementById('clear-filters');
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', () => {
+                    window.selectedCategories.clear();
+                    window.selectedReadingTimes.clear();
+                    window.selectedReadStatus = null;
+                    
+                    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active', 'multi-selected'));
+                    document.querySelector('.category-btn[data-category="all"]').classList.add('active');
                     renderStories();
                 });
             }
@@ -222,8 +309,8 @@
             // Добавляем кнопки для каждого времени чтения
             readingTimes.sort().forEach(time => {
                 const button = document.createElement('button');
-                button.className = 'category-btn reading-time-btn';
-                button.setAttribute('data-category', `reading-${time.replace(' ', '-')}`);
+                button.className = 'category-btn reading-time-btn multi-select-btn';
+                button.setAttribute('data-reading-time', time);
                 
                 button.innerHTML = `
                     <span class="category-icon">⏱️</span>
@@ -231,8 +318,18 @@
                 `;
                 
                 button.addEventListener('click', () => {
-                    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
+                    // Убираем активный класс с "Все истории"
+                    document.querySelector('.category-btn[data-category="all"]').classList.remove('active');
+                    
+                    // Переключаем выбор времени чтения
+                    if (window.selectedReadingTimes.has(time)) {
+                        window.selectedReadingTimes.delete(time);
+                        button.classList.remove('multi-selected');
+                    } else {
+                        window.selectedReadingTimes.add(time);
+                        button.classList.add('multi-selected');
+                    }
+                    
                     renderStories();
                 });
                 
@@ -248,7 +345,7 @@
             // Добавляем кнопки категорий
             categories.forEach(cat => {
                 const button = document.createElement('button');
-                button.className = 'category-btn';
+                button.className = 'category-btn multi-select-btn';
                 button.setAttribute('data-category', cat);
                 
                 button.innerHTML = `
@@ -257,10 +354,18 @@
                 `;
                 
                 button.addEventListener('click', () => {
-                    // Убираем активный класс со всех кнопок
-                    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-                    // Добавляем активный класс к выбранной кнопке
-                    button.classList.add('active');
+                    // Убираем активный класс с "Все истории"
+                    document.querySelector('.category-btn[data-category="all"]').classList.remove('active');
+                    
+                    // Переключаем выбор категории
+                    if (window.selectedCategories.has(cat)) {
+                        window.selectedCategories.delete(cat);
+                        button.classList.remove('multi-selected');
+                    } else {
+                        window.selectedCategories.add(cat);
+                        button.classList.add('multi-selected');
+                    }
+                    
                     renderStories();
                 });
                 
@@ -287,7 +392,6 @@
             window.renderStories = function() {
                 const storiesList = document.getElementById('stories-list');
                 const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
-                const activeCategory = document.querySelector('.category-btn.active')?.getAttribute('data-category') || 'all';
                 let filtered = [...stories];
 
                 // Поиск по заголовку и тексту
@@ -298,14 +402,27 @@
                     );
                 }
 
-                // Фильтрация по категории
-                if (activeCategory.startsWith('reading-')) {
-                    // Обрабатываем фильтрацию по времени чтения
-                    const readingTime = activeCategory.replace('reading-', '').replace('-', ' ');
-                    filtered = filtered.filter(s => s.readingTime === readingTime);
-                } else if (activeCategory !== 'all') {
-                    filtered = filtered.filter(s => s.category === activeCategory);
+                // Фильтрация по статусу прочитанности
+                if (window.selectedReadStatus) {
+                    if (window.selectedReadStatus === 'read') {
+                        filtered = filtered.filter(story => window.isStoryRead(story.id));
+                    } else if (window.selectedReadStatus === 'unread') {
+                        filtered = filtered.filter(story => !window.isStoryRead(story.id));
+                    }
                 }
+
+                // Фильтрация по категориям (множественный выбор)
+                if (window.selectedCategories && window.selectedCategories.size > 0) {
+                    filtered = filtered.filter(story => window.selectedCategories.has(story.category));
+                }
+
+                // Фильтрация по времени чтения (множественный выбор)
+                if (window.selectedReadingTimes && window.selectedReadingTimes.size > 0) {
+                    filtered = filtered.filter(story => window.selectedReadingTimes.has(story.readingTime));
+                }
+
+                // Если выбраны и категории, и время чтения - показываем истории, которые соответствуют ОБОИМ критериям
+                // (логика И, а не ИЛИ)
 
                 // Сортировка
                 switch (currentSort) {
@@ -341,21 +458,36 @@
                 } else {
                     filtered.forEach(story => {
                         const li = document.createElement('li');
-                        li.className = 'story-item';
+                        li.className = `story-item ${window.isStoryRead(story.id) ? 'read' : 'unread'}`;
                         
                         const link = document.createElement('a');
                         link.href = `story.html?id=${story.id}`;
                         link.className = 'story-link';
+                        
+                        // Создаем кнопку для переключения статуса прочитанности
+                        const readToggle = document.createElement('button');
+                        readToggle.className = 'read-toggle-btn';
+                        readToggle.title = window.isStoryRead(story.id) ? 'Отметить как непрочитанную' : 'Отметить как прочитанную';
+                        readToggle.innerHTML = window.isStoryRead(story.id) ? '✅' : '📖';
+                        readToggle.onclick = (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            window.toggleReadStatus(story.id);
+                        };
                         
                         link.innerHTML = `
                             <div class="story-title">${story.title}</div>
                             <div class="story-meta">
                                 <span class="story-category">${story.category}</span>
                                 <span class="story-reading-time">⏱️ ${story.readingTime || ''}</span>
+                                <span class="read-status ${window.isStoryRead(story.id) ? 'read' : 'unread'}">
+                                    ${window.isStoryRead(story.id) ? '✅ Прочитано' : '📖 Не прочитано'}
+                                </span>
                             </div>
                         `;
                         
                         li.appendChild(link);
+                        li.appendChild(readToggle);
                         storiesList.appendChild(li);
                     });
                 }
@@ -365,11 +497,34 @@
         // Обновление результатов поиска
         function updateSearchResults(count, searchTerm) {
             const subtitle = document.querySelector('.subtitle');
+            let text = '';
+            
+            // Формируем текст с учетом активных фильтров
+            const activeFilters = [];
+            
             if (searchTerm) {
-                subtitle.textContent = `Найдено ${count} историй по запросу "${searchTerm}"`;
-            } else {
-                subtitle.textContent = 'Собрание самых жутких рассказов с просторов интернета';
+                activeFilters.push(`поиск: "${searchTerm}"`);
             }
+            
+            if (window.selectedReadStatus) {
+                activeFilters.push(window.selectedReadStatus === 'read' ? 'прочитанные' : 'непрочитанные');
+            }
+            
+            if (window.selectedCategories && window.selectedCategories.size > 0) {
+                activeFilters.push(`категории: ${Array.from(window.selectedCategories).join(', ')}`);
+            }
+            
+            if (window.selectedReadingTimes && window.selectedReadingTimes.size > 0) {
+                activeFilters.push(`время: ${Array.from(window.selectedReadingTimes).join(', ')}`);
+            }
+            
+            if (activeFilters.length > 0) {
+                text = `Найдено ${count} историй (${activeFilters.join(' | ')})`;
+            } else {
+                text = 'Собрание самых жутких рассказов с просторов интернета';
+            }
+            
+            subtitle.textContent = text;
         }
 
         // Функция "Поделиться"
@@ -459,13 +614,11 @@
                 }
             });
 
-            // Закрытие при клике на категорию
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    if (window.innerWidth <= 768) {
-                        closeSidebar();
-                    }
-                });
+            // Закрытие при клике на категорию (делегирование события)
+            document.querySelector('.category-list').addEventListener('click', (e) => {
+                if (e.target.closest('.category-btn') && window.innerWidth <= 768) {
+                    setTimeout(closeSidebar, 100); // Небольшая задержка для применения фильтра
+                }
             });
             
             // Handle window resize
