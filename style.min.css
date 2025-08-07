@@ -726,24 +726,25 @@ h1 {
 }
 
 .share-button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
+    background: #232323;
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 1rem 2rem;
     border-radius: 50px;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: none;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
 }
 
 .share-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
+    background: #333;
+    transform: translateY(-2px);
+    box-shadow: none;
 }
 
 .share-status {
@@ -1953,8 +1954,8 @@ body.light-mode .contact-link:hover {
 }
 
 .read-status.unread {
-    background: rgba(255, 152, 0, 0.2);
-    color: #ff9800;
+    background: rgba(255, 255, 255, 0.08);
+    color: #b0b0b0;
 }
 
 .read-toggle-btn {
@@ -1987,8 +1988,8 @@ body.light-mode .contact-link:hover {
 }
 
 .read-toggle-story.unread {
-    background: #ff9800;
-    color: white;
+    background: #444;
+    color: #e0e0e0;
 }
 
 /* === МНОЖЕСТВЕННЫЙ ВЫБОР КАТЕГОРИЙ === */
@@ -2043,8 +2044,8 @@ body.light-mode .read-status.read {
 }
 
 body.light-mode .read-status.unread {
-    background: rgba(255, 152, 0, 0.1);
-    color: #f57c00;
+    background: rgba(0, 0, 0, 0.06);
+    color: #666;
 }
 
 body.light-mode .read-toggle-btn {
