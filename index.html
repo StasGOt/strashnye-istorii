@@ -33,7 +33,13 @@
         <div class="nav-right">
             <button id="sort-alpha" class="sort-btn">А-Я</button>
             <button id="sort-default" class="sort-btn active">По умолчанию</button>
-            <button id="sort-reading" class="sort-btn">⏱️ Время чтения</button>
+            <div class="sort-reading-container">
+                <button id="sort-reading" class="sort-btn">⏱️ Время чтения</button>
+                <div class="sort-arrows">
+                    <button id="sort-reading-asc" class="sort-arrow" title="От меньшего к большему">▲</button>
+                    <button id="sort-reading-desc" class="sort-arrow" title="От большего к меньшему">▼</button>
+                </div>
+            </div>
             <button id="theme-toggle" class="control-btn theme-btn" title="Сменить тему">🌙</button>
         </div>
     </header>
@@ -361,14 +367,73 @@
             const sortButtons = document.querySelectorAll('.sort-btn');
             let currentSort = 'default';
 
+            // Переменная для направления сортировки времени чтения
+            let readingSortDirection = 'asc'; // 'asc' или 'desc'
+
             // Обработчики сортировки
             sortButtons.forEach(btn => {
                 btn.addEventListener('click', () => {
                     sortButtons.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    currentSort = btn.id.replace('sort-', '');
+                    const newSort = btn.id.replace('sort-', '');
+                    
+                    // Для кнопки времени чтения - переключаем направление
+                    if (newSort === 'reading' && currentSort === 'reading') {
+                        readingSortDirection = readingSortDirection === 'asc' ? 'desc' : 'asc';
+                    } else if (newSort === 'reading') {
+                        readingSortDirection = 'asc';
+                    }
+                    
+                    currentSort = newSort;
+                    
+                    // Сбрасываем направление сортировки времени при смене типа сортировки
+                    if (currentSort !== 'reading') {
+                        readingSortDirection = 'asc';
+                        document.querySelectorAll('.sort-arrow').forEach(arrow => arrow.classList.remove('active'));
+                    } else {
+                        // Обновляем активную стрелочку для времени чтения
+                        document.querySelectorAll('.sort-arrow').forEach(arrow => arrow.classList.remove('active'));
+                        const activeArrow = readingSortDirection === 'asc' ? 
+                            document.getElementById('sort-reading-asc') : 
+                            document.getElementById('sort-reading-desc');
+                        activeArrow.classList.add('active');
+                    }
+                    
                     renderStories();
                 });
+            });
+
+            // Обработчики стрелочек сортировки времени чтения
+            document.getElementById('sort-reading-asc').addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                // Активируем сортировку по времени чтения
+                sortButtons.forEach(b => b.classList.remove('active'));
+                document.getElementById('sort-reading').classList.add('active');
+                currentSort = 'reading';
+                readingSortDirection = 'asc';
+                
+                // Обновляем активную стрелочку
+                document.querySelectorAll('.sort-arrow').forEach(arrow => arrow.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                renderStories();
+            });
+
+            document.getElementById('sort-reading-desc').addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                // Активируем сортировку по времени чтения
+                sortButtons.forEach(b => b.classList.remove('active'));
+                document.getElementById('sort-reading').classList.add('active');
+                currentSort = 'reading';
+                readingSortDirection = 'desc';
+                
+                // Обновляем активную стрелочку
+                document.querySelectorAll('.sort-arrow').forEach(arrow => arrow.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                renderStories();
             });
 
             // Функция рендеринга историй
@@ -416,7 +481,24 @@
                         filtered.sort((a, b) => {
                             if (!a.readingTime) return 1;
                             if (!b.readingTime) return -1;
-                            return a.readingTime.localeCompare(b.readingTime, 'ru');
+                            
+                            // Преобразуем время чтения в числа для корректной сортировки
+                            const getMinutes = (timeStr) => {
+                                if (timeStr.includes('1 минута')) return 1;
+                                if (timeStr.includes('5 минут')) return 5;
+                                // Для других форматов пытаемся извлечь число
+                                const match = timeStr.match(/(\d+)/);
+                                return match ? parseInt(match[1]) : 0;
+                            };
+                            
+                            const timeA = getMinutes(a.readingTime);
+                            const timeB = getMinutes(b.readingTime);
+                            
+                            if (readingSortDirection === 'asc') {
+                                return timeA - timeB;
+                            } else {
+                                return timeB - timeA;
+                            }
                         });
                         break;
                     default:
