@@ -726,24 +726,25 @@ h1 {
 }
 
 .share-button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
+    background: #232323;
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 1rem 2rem;
     border-radius: 50px;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: none;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
 }
 
 .share-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6);
+    background: #333;
+    transform: translateY(-2px);
+    box-shadow: none;
 }
 
 .share-status {
@@ -757,6 +758,17 @@ h1 {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* Light mode override for share button */
+body.light-mode .share-button {
+    background: #f0f0f0;
+    color: #333;
+    border-color: #ddd;
+}
+
+body.light-mode .share-button:hover {
+    background: #e0e0e0;
 }
 
 /* === УПРАВЛЯЮЩИЕ КНОПКИ === */
@@ -1953,8 +1965,8 @@ body.light-mode .contact-link:hover {
 }
 
 .read-status.unread {
-    background: rgba(255, 152, 0, 0.2);
-    color: #ff9800;
+    background: rgba(255, 255, 255, 0.08);
+    color: #b0b0b0;
 }
 
 .read-toggle-btn {
@@ -1987,8 +1999,8 @@ body.light-mode .contact-link:hover {
 }
 
 .read-toggle-story.unread {
-    background: #ff9800;
-    color: white;
+    background: #444;
+    color: #e0e0e0;
 }
 
 /* === МНОЖЕСТВЕННЫЙ ВЫБОР КАТЕГОРИЙ === */
@@ -2001,58 +2013,6 @@ body.light-mode .contact-link:hover {
 
 .category-btn.multi-selected .category-icon {
     animation: pulse 2s infinite;
-}
-
-
-
-.category-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0 8px 0;
-    margin-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.category-header:first-child {
-    margin-top: 0;
-    border-top: none;
-}
-
-.category-header h4 {
-    margin: 0;
-    font-size: 0.9rem;
-    color: #888;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* === СВЕТЛАЯ ТЕМА === */
-body.light-mode .story-item.read {
-    background: rgba(102, 126, 234, 0.05);
-}
-
-body.light-mode .story-item.read .story-title {
-    color: #666;
-}
-
-body.light-mode .read-status.read {
-    background: rgba(76, 175, 80, 0.1);
-    color: #2e7d32;
-}
-
-body.light-mode .read-status.unread {
-    background: rgba(255, 152, 0, 0.1);
-    color: #f57c00;
-}
-
-body.light-mode .read-toggle-btn {
-    background: rgba(102, 126, 234, 0.1);
-}
-
-body.light-mode .read-toggle-btn:hover {
-    background: rgba(102, 126, 234, 0.2);
 }
 
 
