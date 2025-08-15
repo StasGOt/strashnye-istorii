@@ -93,6 +93,17 @@
             });
         }
 
+        // Функция форматирования текста истории
+        function formatStoryText(text) {
+            return text
+                // Заменяем двойные переносы строк на абзацы
+                .replace(/\n\n/g, '<br><br>')
+                // Выделяем диалоги с тире
+                .replace(/\n— ([^\n]+)/g, '<br><span class="dialogue">— $1</span>')
+                // Выделяем прямую речь в кавычках
+                .replace(/«([^»]+)»/g, '<span class="quote">«$1»</span>');
+        }
+
         // Рендеринг истории
         function renderStory() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -116,11 +127,11 @@
                     </div>
                     
                     <div class="story-content">
-                        ${story.text}
+                        ${formatStoryText(story.text)}
                     </div>
                     
                     <div class="story-actions">
-                        <a href="index.html" class="action-btn btn-primary">
+                        <a href="index.html" class="action-btn btn-secondary">
                             ← Все истории
                         </a>
                         <button id="read-toggle" onclick="toggleReadStatus('${story.id}')" class="action-btn btn-secondary read-toggle-story ${isRead ? 'read' : 'unread'}">
@@ -146,7 +157,7 @@
                     </div>
                     
                     <div class="story-actions">
-                        <a href="index.html" class="action-btn btn-primary">
+                        <a href="index.html" class="action-btn btn-secondary">
                             ← Вернуться к списку
                         </a>
                     </div>
