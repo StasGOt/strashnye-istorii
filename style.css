@@ -550,6 +550,10 @@ body.light-mode .error-suggestions li {
     font-size: 0.95rem;
     position: relative;
     overflow: hidden;
+    min-height: 48px;
+    height: 48px;
+    box-sizing: border-box;
+    justify-content: flex-start;
 }
 
 .category-btn::before {
@@ -590,11 +594,20 @@ body.light-mode .error-suggestions li {
     font-size: 1.1rem;
     width: 20px;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 .category-name {
     flex: 1;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .category-header {
@@ -1628,6 +1641,8 @@ body.light-mode .contact-link:hover {
     .category-btn {
         padding: 0.6rem 0.8rem;
         font-size: 0.9rem;
+        min-height: 44px;
+        height: 44px;
     }
     
     .sidebar-header h3 {
@@ -1952,6 +1967,8 @@ body.light-mode .contact-link:hover {
     .category-btn {
         padding: 0.5rem 0.75rem;
         font-size: 0.85rem;
+        min-height: 40px;
+        height: 40px;
     }
     
     .sidebar-header {
