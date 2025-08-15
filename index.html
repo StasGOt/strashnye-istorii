@@ -59,19 +59,46 @@
                     <span class="category-icon">📚</span>
                     <span class="category-name">Все истории</span>
                 </button>
+                
                 <!-- Фильтр по статусу прочитанности -->
-                <div class="category-header">
-                    <h4>📖 Статус чтения</h4>
+                <div class="filter-section">
+                    <div class="category-header collapsible" data-section="read-status">
+                        <h4>📖 Статус чтения</h4>
+                        <span class="collapse-arrow">▼</span>
+                    </div>
+                    <div class="filter-content" id="read-status-content">
+                        <button class="category-btn read-status-btn" data-read-status="unread">
+                            <span class="category-icon">📖</span>
+                            <span class="category-name">Непрочитанные</span>
+                        </button>
+                        <button class="category-btn read-status-btn" data-read-status="read">
+                            <span class="category-icon">✅</span>
+                            <span class="category-name">Прочитанные</span>
+                        </button>
+                    </div>
                 </div>
-                <button class="category-btn read-status-btn" data-read-status="unread">
-                    <span class="category-icon">📖</span>
-                    <span class="category-name">Непрочитанные</span>
-                </button>
-                <button class="category-btn read-status-btn" data-read-status="read">
-                    <span class="category-icon">✅</span>
-                    <span class="category-name">Прочитанные</span>
-                </button>
-                <!-- Категории будут добавлены динамически -->
+
+                <!-- Фильтр по времени чтения -->
+                <div class="filter-section">
+                    <div class="category-header collapsible" data-section="reading-time">
+                        <h4>⏱️ Время чтения</h4>
+                        <span class="collapse-arrow">▼</span>
+                    </div>
+                    <div class="filter-content" id="reading-time-content">
+                        <!-- Кнопки времени чтения будут добавлены динамически -->
+                    </div>
+                </div>
+
+                <!-- Категории -->
+                <div class="filter-section">
+                    <div class="category-header collapsible" data-section="categories">
+                        <h4>🏷️ Категории</h4>
+                        <span class="collapse-arrow">▼</span>
+                    </div>
+                    <div class="filter-content" id="categories-content">
+                        <!-- Категории будут добавлены динамически -->
+                    </div>
+                </div>
             </div>
         </aside>
 
@@ -230,7 +257,6 @@
 
         // Инициализация категорий в сайдбаре
         function initializeCategories() {
-            const categoryList = document.querySelector('.category-list');
             const categories = [...new Set(stories.map(s => s.category))];
             const readingTimes = [...new Set(stories.map(s => s.readingTime).filter(Boolean))];
             
@@ -244,7 +270,8 @@
                 'Паранормальное': '👻',
                 'Технохоррор': '💻',
                 'Проклятия': '🔮',
-                'Убийцы / маньяки': '🔪'
+                'Убийцы / маньяки': '🔪',
+                'Маньяки': '🔪'
             };
 
             // Добавляем обработчик для кнопки "Все истории"
@@ -287,78 +314,113 @@
                 });
             });
 
-
-
-            // Создаем разделитель для времени чтения
-            const readingTimeHeader = document.createElement('div');
-            readingTimeHeader.className = 'category-header';
-            readingTimeHeader.innerHTML = '<h4>⏱️ Время чтения</h4>';
-            categoryList.appendChild(readingTimeHeader);
-
-            // Добавляем кнопки для каждого времени чтения
-            readingTimes.sort().forEach(time => {
-                const button = document.createElement('button');
-                button.className = 'category-btn reading-time-btn multi-select-btn';
-                button.setAttribute('data-reading-time', time);
-                
-                button.innerHTML = `
-                    <span class="category-icon">⏱️</span>
-                    <span class="category-name">${time}</span>
-                `;
-                
-                button.addEventListener('click', () => {
-                    // Убираем активный класс с "Все истории"
-                    document.querySelector('.category-btn[data-category="all"]').classList.remove('active');
+            // Добавляем кнопки времени чтения в соответствующий контейнер
+            const readingTimeContent = document.getElementById('reading-time-content');
+            if (readingTimeContent) {
+                readingTimes.sort().forEach(time => {
+                    const button = document.createElement('button');
+                    button.className = 'category-btn reading-time-btn multi-select-btn';
+                    button.setAttribute('data-reading-time', time);
                     
-                    // Переключаем выбор времени чтения
-                    if (window.selectedReadingTimes.has(time)) {
-                        window.selectedReadingTimes.delete(time);
-                        button.classList.remove('multi-selected');
-                    } else {
-                        window.selectedReadingTimes.add(time);
-                        button.classList.add('multi-selected');
-                    }
+                    button.innerHTML = `
+                        <span class="category-icon">⏱️</span>
+                        <span class="category-name">${time}</span>
+                    `;
                     
-                    renderStories();
+                    button.addEventListener('click', () => {
+                        // Убираем активный класс с "Все истории"
+                        document.querySelector('.category-btn[data-category="all"]').classList.remove('active');
+                        
+                        // Переключаем выбор времени чтения
+                        if (window.selectedReadingTimes.has(time)) {
+                            window.selectedReadingTimes.delete(time);
+                            button.classList.remove('multi-selected');
+                        } else {
+                            window.selectedReadingTimes.add(time);
+                            button.classList.add('multi-selected');
+                        }
+                        
+                        renderStories();
+                    });
+                    
+                    readingTimeContent.appendChild(button);
                 });
-                
-                categoryList.appendChild(button);
+            }
+
+            // Добавляем кнопки категорий в соответствующий контейнер
+            const categoriesContent = document.getElementById('categories-content');
+            if (categoriesContent) {
+                categories.forEach(cat => {
+                    const button = document.createElement('button');
+                    button.className = 'category-btn multi-select-btn';
+                    button.setAttribute('data-category', cat);
+                    
+                    button.innerHTML = `
+                        <span class="category-icon">${categoryIcons[cat] || '📖'}</span>
+                        <span class="category-name">${cat}</span>
+                    `;
+                    
+                    button.addEventListener('click', () => {
+                        // Убираем активный класс с "Все истории"
+                        document.querySelector('.category-btn[data-category="all"]').classList.remove('active');
+                        
+                        // Переключаем выбор категории
+                        if (window.selectedCategories.has(cat)) {
+                            window.selectedCategories.delete(cat);
+                            button.classList.remove('multi-selected');
+                        } else {
+                            window.selectedCategories.add(cat);
+                            button.classList.add('multi-selected');
+                        }
+                        
+                        renderStories();
+                    });
+                    
+                    categoriesContent.appendChild(button);
+                });
+            }
+
+            // Инициализируем логику сворачивания фильтров
+            initializeCollapsibleFilters();
+        }
+
+        // Функция для инициализации сворачиваемых фильтров
+        function initializeCollapsibleFilters() {
+            document.querySelectorAll('.category-header.collapsible').forEach(header => {
+                header.addEventListener('click', () => {
+                    const section = header.getAttribute('data-section');
+                    const content = document.getElementById(`${section}-content`);
+                    const arrow = header.querySelector('.collapse-arrow');
+                    
+                    if (content && arrow) {
+                        const isCollapsed = content.classList.contains('collapsed');
+                        
+                        if (isCollapsed) {
+                            // Разворачиваем
+                            content.classList.remove('collapsed');
+                            header.classList.remove('collapsed');
+                        } else {
+                            // Сворачиваем
+                            content.classList.add('collapsed');
+                            header.classList.add('collapsed');
+                        }
+                        
+                        // Сохраняем состояние в localStorage
+                        localStorage.setItem(`filter-${section}-collapsed`, !isCollapsed);
+                    }
+                });
             });
 
-            // Создаем разделитель для категорий
-            const categoriesHeader = document.createElement('div');
-            categoriesHeader.className = 'category-header';
-            categoriesHeader.innerHTML = '<h4>📂 Категории</h4>';
-            categoryList.appendChild(categoriesHeader);
-
-            // Добавляем кнопки категорий
-            categories.forEach(cat => {
-                const button = document.createElement('button');
-                button.className = 'category-btn multi-select-btn';
-                button.setAttribute('data-category', cat);
+            // Восстанавливаем состояние фильтров из localStorage
+            document.querySelectorAll('.category-header.collapsible').forEach(header => {
+                const section = header.getAttribute('data-section');
+                const content = document.getElementById(`${section}-content`);
+                const isCollapsed = localStorage.getItem(`filter-${section}-collapsed`) === 'true';
                 
-                button.innerHTML = `
-                    <span class="category-icon">${categoryIcons[cat] || '📖'}</span>
-                    <span class="category-name">${cat}</span>
-                `;
-                
-                button.addEventListener('click', () => {
-                    // Убираем активный класс с "Все истории"
-                    document.querySelector('.category-btn[data-category="all"]').classList.remove('active');
-                    
-                    // Переключаем выбор категории
-                    if (window.selectedCategories.has(cat)) {
-                        window.selectedCategories.delete(cat);
-                        button.classList.remove('multi-selected');
-                    } else {
-                        window.selectedCategories.add(cat);
-                        button.classList.add('multi-selected');
-                    }
-                    
-                    renderStories();
-                });
-                
-                categoryList.appendChild(button);
+                if (isCollapsed && content) {
+                    content.classList.add('collapsed');
+                    header.classList.add('collapsed');
+                }
             });
         }
 

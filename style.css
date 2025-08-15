@@ -620,6 +620,55 @@ body.light-mode .error-suggestions li {
     gap: 0.5rem;
 }
 
+/* Сворачиваемые фильтры */
+.filter-section {
+    margin-bottom: 0.5rem;
+}
+
+.category-header.collapsible {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+    padding: 1rem 1rem 0.5rem;
+    margin: 1rem 0 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.category-header.collapsible:first-child {
+    margin-top: 0;
+    border-top: none;
+}
+
+.category-header.collapsible:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.collapse-arrow {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+    color: #888;
+    margin-left: 0.5rem;
+}
+
+.category-header.collapsed .collapse-arrow {
+    transform: rotate(-90deg);
+}
+
+.filter-content {
+    max-height: 500px;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 1;
+}
+
+.filter-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+}
+
 .reading-time-btn {
     background: rgba(255, 193, 7, 0.1);
     border-left: 3px solid transparent;
@@ -1031,6 +1080,18 @@ body.light-mode .category-header {
 }
 
 body.light-mode .category-header h4 {
+    color: #666;
+}
+
+body.light-mode .category-header.collapsible {
+    border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .category-header.collapsible:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .collapse-arrow {
     color: #666;
 }
 
